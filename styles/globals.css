@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: Roboto-Regular;
+  src: url("../assets/Roboto-Regular.ttf");
+}
+
+body {
+  @apply bg-[#1C2631] text-[#fff] overflow-hidden font-Roboto-Regular;
+}
+
+.inputbg {
+  background-color: rgba(255, 255, 255, 0.16);
+}
