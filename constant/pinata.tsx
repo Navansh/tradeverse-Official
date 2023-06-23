@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { pinata_apikey, pinata_secret, sendJsonHeader } from "./config";
 
 export async function sendJSONToIPFS(metadata: any) {
@@ -42,21 +42,17 @@ export async function sendDataToIPFS(metadata: any) {
 }
 
 export async function sendFileToIPFS(file: any) {
-  const formData = new FormData();
+  const formData = new FormData() as FormData;
   const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
   formData.append("file", file);
-  const opts = JSON.stringify({
-    cidVersion: 0,
-  });
-  formData.append("pinataOptions", opts);
-  const options = {
-    maxBodyLength: "Infinity",
+  const options: AxiosRequestConfig = {
     headers: {
-      "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+      "Content-Type": "multipart/form-data",
       pinata_api_key: pinata_apikey,
       pinata_secret_api_key: pinata_secret,
       Accept: "text/plain",
     },
+    maxContentLength: Infinity,
   };
   const resFile = await axios.post(url, formData, options);
   return resFile.data.IpfsHash;

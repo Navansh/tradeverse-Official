@@ -89,6 +89,8 @@ const ProductForm = () => {
       availability,
       refundTime
     );
+    window.location.reload();
+    router.push("/dashboard/feed");
   };
 
   return (

@@ -108,7 +108,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
         owner: item.owner,
         refund: Number(item.refundTimeLimit),
       }));
-     // console.log(parsedProduct);
+      // console.log(parsedProduct);
       setAllProduct(parsedProduct);
       return tx; // Return the fetched store details
     } catch (error) {
@@ -161,18 +161,11 @@ export const ContractProvider = ({ children }: ContractChildren) => {
 
   const placeOrder = async (id: number, _price: number, _arbiter: string) => {
     try {
-      if (typeof window != "undefined") {
-        const runtimeConnector = new RuntimeConnector(Extension);
-        await runtimeConnector?.connectWallet(WALLET.METAMASK);
-        const res = await runtimeConnector?.contractCall({
-          contractAddress: ProductContract,
-          abi: productAbi,
-          method: "placeOrder",
-          params: [id, _price, _arbiter],
-          mode: Mode.Write,
-        });
-        console.log({ res });
-      }
+      const result = await connectWithContract();
+      const tx = await result.placeOrder(id, {
+        value: ethers.utils.parseEther(_price.toString())
+      }, _arbiter);
+      await tx.wait();
     } catch (error) {
       console.log(error);
     }

@@ -5,9 +5,24 @@ import { BsChatTextFill, BsChevronDown, BsChevronRight, BsDot } from 'react-icon
 import { FaChevronRight } from 'react-icons/fa'
 import Button from './Button'
 import Image from 'next/image'
+import { useContractContext } from '@/context/ContractProvider'
+import { ethers } from 'ethers'
 
+interface Product {
+  name: string;
+  desc: string;
+  image: never[];
+  price: number;
+  category: string;
+  pid: number;
+  quantity: number;
+  location: string;
+  max: number;
+  owner: string;
+  refund: number;
+}
 interface Props {
-    item: any
+    item: Product
 }
 
 const DetailCard = ({ item }: Props) => {
@@ -16,6 +31,7 @@ const DetailCard = ({ item }: Props) => {
         isActive: false,
         activeRoute: ""
       });
+      const { placeOrder } = useContractContext()
       
   function formatEthValue(ethValue: any, decimalPlaces: number) {
     const formattedValue = parseFloat(ethValue).toFixed(decimalPlaces);
@@ -28,30 +44,29 @@ const DetailCard = ({ item }: Props) => {
     return formatEthValue(ethereumAmount, 4);
   }
 
+  const handlePurchase = async() => {
+    await  placeOrder(item.pid, item.price,  "0xAB1c6e48eB09AC76ba09C743B3EDFa5dC59463D3")
+  }
+
   
   const info = [
     {
       title: "Product description",
-      info: item?.description,
+      info: item?.desc,
       active: "product",
     },
     {
       title: "Seller information",
-      info: item?.description,
+      info: item?.desc,
       active: "seller",
     },
   ];
   return (
     <div className="border-2  relative border-Foundation px-4 py-2.5 h-[790px] w-[640px]">
-    {item?.isSellerActive && (
-      <button className="absolute top-0 animate-pulse transition-all duration-500 cursor-pointer bg-[#F90000] right-0 text-center flex items-center space-x-6 px-5 py-2.5">
-        <span>Seller is Live</span>
-        <FaChevronRight />
-      </button>
-    )}
+ 
     <div className="flex flex-col mt-8 mx-9 items-start">
       <div className="border-b-2 pb-6 flex flex-col items-start w-full border-Foundation">
-        <span className="text-[18px] font-normal">{item?.title}</span>
+        <span className="text-[18px] font-normal">{item?.name}</span>
         <span className="text-[24px] font-bold">{item?.price}</span>
         <div className="flex items-center text-center space-x-">
           <BsDot className="text-green text-xl" />
@@ -112,11 +127,11 @@ const DetailCard = ({ item }: Props) => {
         <div className="flex  items-center justify-around w-full mt-6 space-x-4">
           <span className="text-[18px] font-bold">Quantity:</span>
           <div className="border-4 text-[16px] font-bold border-Bar rounded-[8px] w-[123px] flex items-center h-[48px]">
-            <span onClick={() => handleUpdateQuantity(item.id, -1)}  className="border-r-4 px-4 py-2.5 border-Bar text-Foundation">
+            <span onClick={() => handleUpdateQuantity(item.quantity, -1)}  className="border-r-4 px-4 py-2.5 border-Bar text-Foundation">
               -
             </span>
             <span className="text-[#fff] px-4 py-2.5">{item?.quantity}</span>
-            <span onClick={() => handleUpdateQuantity(item.id, 1)} className="border-l-4 border-Bar text-Foundation px-4 py-2.5">
+            <span onClick={() => handleUpdateQuantity(item.quantity, 1)} className="border-l-4 border-Bar text-Foundation px-4 py-2.5">
               +
             </span>
           </div>
@@ -125,7 +140,7 @@ const DetailCard = ({ item }: Props) => {
           </button>
         </div>
         <div className="flex items-center justify-between w-full mt-6">
-          <Button title="Buy" isFunc />
+          <Button title="Buy" isFunc handleClick={handlePurchase} />
           <div className="bg-green p-[18px] cursor-pointer rounded-full">
             <BsChatTextFill size={25} />
           </div>
