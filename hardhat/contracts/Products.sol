@@ -71,8 +71,14 @@ contract Products {
     Product[] allProduct;
     Store[] allStores;
     Live[] allLives;
+    Order[] allOrders;
 
-    event OrderCreated(uint256 orderId, address buyer, address seller, uint256 price);
+    event OrderCreated(
+        uint256 orderId,
+        address buyer,
+        address seller,
+        uint256 price
+    );
 
     modifier onlyOwner() {
         require(
@@ -83,12 +89,18 @@ contract Products {
     }
 
     modifier onlyBuyer(uint256 _orderId) {
-        require(msg.sender == orders[_orderId].buyer, "Only the buyer can call this function.");
+        require(
+            msg.sender == orders[_orderId].buyer,
+            "Only the buyer can call this function."
+        );
         _;
     }
 
     modifier onlySeller(uint256 _orderId) {
-        require(msg.sender == orders[_orderId].seller, "Only the seller can call this function.");
+        require(
+            msg.sender == orders[_orderId].seller,
+            "Only the seller can call this function."
+        );
         _;
     }
 
@@ -151,11 +163,18 @@ contract Products {
         return productsId;
     }
 
-    function placeOrder(uint256 id, uint256 _price, address payable _arbiter) public payable {
+    function placeOrder(
+        uint256 id,
+        uint256 _price,
+        address payable _arbiter
+    ) public payable {
         Order storage newOrder = orders[orderIdCounter];
         require(msg.value >= products[id].price, "Insufficient payment.");
         require(!newOrder.isPaid, "Payment has already been made.");
-        require(products[id].status == OrderStatus.Available, "Product is not available.");
+        require(
+            products[id].status == OrderStatus.Available,
+            "Product is not available."
+        );
         address payable _seller = products[id].owner; // Only allow the owner to sell items for now
         Escrow escrowInstance = new Escrow();
         escrowInstance.initialize(_seller, _arbiter, _price);
@@ -170,16 +189,23 @@ contract Products {
         newOrder.isFulfilled = false;
         newOrder.isRefunded = false;
         newOrder.escrow = escrowInstance;
+        allOrders.push(newOrder);
         storeList[products[id].owner].customer.push(msg.sender);
         emit OrderCreated(orderIdCounter, msg.sender, _seller, _price);
     }
 
     event OrderDelivered(uint256 orderId);
 
-    function confirmDelivery(uint256 _orderId, bool _success) external onlyBuyer(_orderId) {
+    function confirmDelivery(
+        uint256 _orderId,
+        bool _success
+    ) external onlyBuyer(_orderId) {
         Order storage order = orders[_orderId];
         require(order.isPaid, "Payment has not been made.");
-        require(order.status == OrderStatus.Shipped, "Order has not been shipped.");
+        require(
+            order.status == OrderStatus.Shipped,
+            "Order has not been shipped."
+        );
 
         // Call the confirmDelivery function in the Escrow contract
         order.escrow.confirmDelivery(_success);
@@ -218,37 +244,27 @@ contract Products {
         emit OrderRefunded(_orderId);
     }
 
-    function getUserStoreDetails(
-        address _owner
-    )
-        external
-        view
-        returns (
-            address,
-            string memory,
-            bool,
-            string memory,
-            string memory,
-            string memory,
-            string memory
-        )
-    {
-        return (
-            storeList[_owner].owner,
-            storeList[_owner].category,
-            storeList[_owner].isSellerActive,
-            storeList[_owner].description,
-            storeList[_owner].lastName,
-            storeList[_owner].name,
-            storeList[_owner].storeName
-        );
+    function getStoreDetails() external view returns (Store[] memory) {
+        return allStores;
     }
 
-    function getProductByAddress(address _owner) external view returns(Product[] memory){
+    function getProductDetails() external view returns (Product[] memory) {
+        return allProduct;
+    }
+
+    function getAllOrder() external view returns (Order[] memory) {
+        return allOrders;
+    }
+
+    function getProductByAddress(
+        address _owner
+    ) external view returns (Product[] memory) {
         return addressToProducts[_owner];
     }
 
-    function startStream(string memory _callId) external onlyIfStoreExist returns (bool) {
+    function startStream(
+        string memory _callId
+    ) external onlyIfStoreExist returns (bool) {
         Live storage goLive = lives[noOfLives];
         goLive.callId = _callId;
         goLive.storeName = storeList[msg.sender].storeName;

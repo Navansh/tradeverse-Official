@@ -28,6 +28,7 @@ const SignUpForm = ({ setActive }: Props) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [location, setLocation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const nextStep = () => {
@@ -83,7 +84,8 @@ const SignUpForm = ({ setActive }: Props) => {
       if (!name || !lastName || !selectedCategory || !storeName || !description)
         return toast.error("Fill every required part");
       // Perform validation or data handling for the Account step
-      const tx = await createAStore(
+      setIsLoading(true);
+      const tx = createAStore(
         storeName,
         selectedCategory,
         name,
@@ -91,19 +93,23 @@ const SignUpForm = ({ setActive }: Props) => {
         description,
         location
       );
-      toast.success("Store Created successfully", {
-        position: "bottom-right"
-      });
-      // If validation is successful, proceed to the next step
-      nextStep();
+      setIsLoading(false);
+      if (!isLoading) {
+        toast.success("Store Created successfully", {
+          position: "bottom-right",
+        });
+        // If validation is successful, proceed to the next step
+        nextStep();
+      }
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
-      if (!email || !password) return toast.error("Enter email and password", {
-        position: "bottom-right"
-      });
+      if (!email || !password)
+        return toast.error("Enter email and password", {
+          position: "bottom-right",
+        });
       if (password != confirmPassword)
         return toast.error("Password doesnt match", {
-          position: "bottom-right"
+          position: "bottom-right",
         });
       signUp(email, password);
       onAuthStateChanged(auth, (user) => {

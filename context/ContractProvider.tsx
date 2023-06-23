@@ -7,6 +7,8 @@ import {
   WALLET,
 } from "@dataverse/runtime-connector";
 import { ethers } from "ethers";
+import connectWithContract from "@/constant";
+import { useAccount, useAccountInfo } from "@particle-network/connect-react-ui";
 
 interface ContractChildren {
   children: React.ReactNode;
@@ -32,6 +34,7 @@ interface ContractContextTypes {
     _description: string,
     _location: string
   ) => Promise<void>;
+  storeDetail: {};
 }
 
 const ContractContext = createContext<ContractContextTypes | null>(null);
@@ -39,6 +42,9 @@ const ContractContext = createContext<ContractContextTypes | null>(null);
 export const ContractProvider = ({ children }: ContractChildren) => {
   const ProductContract = "0xeCC0dCAe75d9AD3bE9Dafd358605f2cFCbDBBd49";
   const productAbi = productJson.abi;
+  const account = useAccount();
+  const [storeDetail, setStoreDetails] = useState([]);
+  console.log(storeDetail);
 
   const createAStore = async (
     _storeName: string,
@@ -49,29 +55,37 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     _location: string
   ) => {
     try {
-      if (typeof window != "undefined") {
-        const runtimeConnector = new RuntimeConnector(Extension);
-        await runtimeConnector?.connectWallet(WALLET.METAMASK);
-        const res = await runtimeConnector?.contractCall({
-          contractAddress: ProductContract,
-          abi: productAbi,
-          method: "createAStore",
-          params: [
-            _storeName,
-            _category,
-            _name,
-            _lastName,
-            _description,
-            _location,
-          ],
-          mode: Mode.Write,
-        });
-        console.log({ res });
-      }
+      const contract = await connectWithContract();
+      const tx = await contract.createAStore(
+        _storeName,
+        _category,
+        _name,
+        _lastName,
+        _description,
+        _location
+      );
+      console.log(tx);
+      await tx.wait();
     } catch (error) {
       console.log(error);
     }
   };
+
+  const getStoreDetails = async () => {
+    try {
+      // Call the getStoreDetails() function from the smart contract
+      const result = await connectWithContract();
+      const tx = await result.getStoreDetails();
+      // Handle the returned result as needed
+      console.log(tx); // or return result; or perform any other actions
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getStoreDetails()
+  }, [])
 
   const placeOrder = async (id: number, _price: number, _arbiter: string) => {
     try {
@@ -132,6 +146,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     createAStore,
     addProduct,
     placeOrder,
+    storeDetail,
   };
   return (
     <ContractContext.Provider value={value}>

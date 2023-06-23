@@ -3,12 +3,24 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Button from "./Button";
 import Gallery from "./Gallery";
+import { useContractContext } from "@/context/ContractProvider";
+
+interface Props {
+  storeName: string;
+  category: string;
+  name: string;
+  lastName: string;
+  description: string;
+  location: string;
+}
 
 const MyProfile = () => {
   const [active, setActive] = useState("about");
+  const { storeDetail } = useContractContext();
+  console.log(storeDetail)
   return (
     <div className="h-screen overflow-y-scroll scrollbar-hide">
-      <div >
+      <div>
         <div className="flex relative flex-col justify-center w-[100%]">
           <div className="mt-[40px] flex items-center justify-center">
             <Image
@@ -25,14 +37,17 @@ const MyProfile = () => {
             />
           </div>
           <div className="flex items-end justify-end w-full space-x-[16px] mt-6">
-            <Button title="Edit Profile" isLink isBorder  />
-            <Button title="Create new listing" isLink link="/dashboard/newListing" />
+            <Button title="Edit Profile" isLink isBorder />
+            <Button
+              title="Create new listing"
+              isLink
+              link="/dashboard/newListing"
+            />
           </div>
         </div>
 
         <div className="flex flex-col items-start space-y-6 pb-6 border-b border-[#E6E6E6]">
           <h1 className="text-[24px] font-bold trackking-[-1.2px]">
-            Pod Store
           </h1>
           <p className="flex flex-col w-[800px] flex-shrink-0 text-[16px] leading-[24px]">
             Welcome to our Pod Store! Discover a world of innovative and

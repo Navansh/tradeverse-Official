@@ -1,3 +1,5 @@
+import { Celo } from '@particle-network/common';
+import { CeloTestnet } from '@particle-network/common';
 import { ethers } from "ethers";
 import Product from "./Products.json";
 import {
@@ -16,6 +18,7 @@ import { GiRolledCloth } from "react-icons/gi";
 import { product, product2, product3, product4, product5 } from "@/assets";
 import { ParticleNetwork, WalletEntryPosition } from "@particle-network/auth";
 import { ParticleProvider } from "@particle-network/provider";
+import productJson from '../context/Products.json'
 
 const category = [
   {
@@ -266,20 +269,23 @@ const particle = new ParticleNetwork({
   projectId: "f8dc7e0f-ea6a-469c-8a41-c572ba65e0d2",
   clientKey: "c4mrm5RvfG8T7zsqOqZJtU78rd5M821fe2vMVhy2",
   appId: "24b042dd-86d6-4507-a55c-fdd7981f0ae5",
-  chainName: "BSC", //optional: current chain name, default Ethereum.
-  chainId: 97, //optional: current chain id, default 1.
+  chainName: "Celo", //optional: current chain name, default Ethereum.
+  chainId: 44787, //optional: current chain id, default 1.
   wallet: {
     //optional: by default, the wallet entry is displayed in the bottom right corner of the webpage.
     displayWalletEntry: true, //show wallet entry when connect particle.
-    defaultWalletEntryPosition: WalletEntryPosition.BR, //wallet entry position
-    uiMode: "dark", //optional: light or dark, if not set, the default is the same as web auth.
+    defaultWalletEntryPosition: WalletEntryPosition.BL, //wallet entry position
+    uiMode: "light", //optional: light or dark, if not set, the default is the same as web auth.
     supportChains: [
-      { id: 1, name: "BSCTestnet" },
-      { id: 5, name: "Ethereum" },
+      { id: 1, name: "CeloTestnet" },
+      { id: 5, name: "Celo" },
     ], // optional: web wallet support chains.
     customStyle: {}, //optional: custom wallet style
   },
 });
+const ProductContract = "0xbe9a1bD1FA89EbdE4A2381EFd708717c6e011a7C";
+const productAbi = productJson.abi;
+
 
 const particleProvider = new ParticleProvider(particle.auth);
 
@@ -292,8 +298,8 @@ export default function connectWithContract() {
 
   // Creating a new contract factory with the signer, address and ABI
   const contract = new ethers.Contract(
-    "0x9319A737d7265cd21AFd7bD22Bd7b19a6F8f070F",
-    Product.abi,
+    ProductContract,
+    productAbi,
     signer
   );
 

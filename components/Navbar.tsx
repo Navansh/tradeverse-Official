@@ -8,6 +8,7 @@ import {
 import Image from "next/image";
 import React from "react";
 import { FaSearch, FaChevronDown, FaBars } from "react-icons/fa";
+import ConnectModal from "./ConnectModal";
 
 const Navbar = () => {
   const { address, setAddress } = useTradeContext();
@@ -57,16 +58,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <button
-        onClick={() => connect()}
-        className="border-green border px-4 py-2.5 text-green rounded-[48px] hidden lg:flex items-center space-x-4"
-      >
-        <Image src={profile} alt="profile" />
-        <span>
-          {address?.slice(0, 6)}...{address?.slice(37, 47)}
-        </span>
-        <FaChevronDown />
-      </button>
+      <ConnectModal />
 
       <FaBars size={25} className="md:hidden block" />
     </nav>

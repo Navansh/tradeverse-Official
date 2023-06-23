@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import store from "@/redux/store";
 import { ModalProvider } from "@particle-network/connect-react-ui";
 import { WalletEntryPosition } from "@particle-network/auth";
-import { Ethereum, EthereumGoerli } from "@particle-network/common";
+import { Ethereum, EthereumGoerli, Celo, CeloTestnet } from "@particle-network/common";
 import { evmWallets } from "@particle-network/connect";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,12 +20,12 @@ export default function App({ Component, pageProps }: AppProps) {
         projectId: "a581fe1b-809a-40f9-a9e5-6ac8683695fc",
         clientKey: "ccyYA3EfVgH6LjvwxCbdi4E3qdkzjRmZR3t4c0Ot",
         appId: "9fcfcc9f-a1c7-41eb-afaa-939befdd3b33",
-        chains: [Ethereum, EthereumGoerli],
+        chains: [Celo, CeloTestnet],
         particleWalletEntry: {
           //optional: particle wallet config
           displayWalletEntry: true, //display wallet button when connect particle success.
           defaultWalletEntryPosition: WalletEntryPosition.BR,
-          supportChains: [Ethereum, EthereumGoerli],
+          supportChains: [Celo, CeloTestnet],
           customStyle: {}, //optional: custom wallet style
         },
         securityAccount: {
@@ -35,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
           //prompt set master password. 0: None(default), 1: Once, 2: Always
           promptMasterPasswordSettingWhenLogin: 1,
         },
-        wallets: evmWallets({ qrcode: false }),
+       // wallets: evmWallets({ qrcode: false }),
       }}
       theme={"auto"}
       language={"en"} //optional：localize, default en
