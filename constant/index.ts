@@ -1,4 +1,5 @@
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
+import Product from "./Products.json";
 import {
   MdOutlineRssFeed,
   MdSportsTennis,
@@ -15,7 +16,6 @@ import { GiRolledCloth } from "react-icons/gi";
 import { product, product2, product3, product4, product5 } from "@/assets";
 import { ParticleNetwork, WalletEntryPosition } from "@particle-network/auth";
 import { ParticleProvider } from "@particle-network/provider";
-
 
 const category = [
   {
@@ -167,7 +167,13 @@ const products: Props[] = [
     quantity: 0,
   },
   {
-    image: [product, product, product, product, product],
+    image: [
+     product,
+      product,
+      product,
+      product,
+      product,
+    ],
     title: "Macbook M2 Chip",
     price: "$4,000 - 0.002 ETH",
     location: "Port Harcourt, Rivers state",
@@ -262,13 +268,17 @@ const particle = new ParticleNetwork({
   appId: "24b042dd-86d6-4507-a55c-fdd7981f0ae5",
   chainName: "BSC", //optional: current chain name, default Ethereum.
   chainId: 97, //optional: current chain id, default 1.
-  wallet: {   //optional: by default, the wallet entry is displayed in the bottom right corner of the webpage.
-    displayWalletEntry: true,  //show wallet entry when connect particle.
+  wallet: {
+    //optional: by default, the wallet entry is displayed in the bottom right corner of the webpage.
+    displayWalletEntry: true, //show wallet entry when connect particle.
     defaultWalletEntryPosition: WalletEntryPosition.BR, //wallet entry position
-    uiMode: "dark",  //optional: light or dark, if not set, the default is the same as web auth.
-    supportChains: [{ id: 1, name: "BSCTestnet"}, { id: 5, name: "Ethereum"}], // optional: web wallet support chains.
+    uiMode: "dark", //optional: light or dark, if not set, the default is the same as web auth.
+    supportChains: [
+      { id: 1, name: "BSCTestnet" },
+      { id: 5, name: "Ethereum" },
+    ], // optional: web wallet support chains.
     customStyle: {}, //optional: custom wallet style
-  }
+  },
 });
 
 const particleProvider = new ParticleProvider(particle.auth);
@@ -281,7 +291,11 @@ export default function connectWithContract() {
   const signer = provider.getSigner();
 
   // Creating a new contract factory with the signer, address and ABI
-  const contract = new ethers.Contract( "",  signer);
+  const contract = new ethers.Contract(
+    "0x9319A737d7265cd21AFd7bD22Bd7b19a6F8f070F",
+    Product.abi,
+    signer
+  );
 
   return contract;
 }

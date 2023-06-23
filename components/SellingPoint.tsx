@@ -19,7 +19,7 @@ const SellingPoint = () => {
         {sellingPoint.map((item) => (
           <div
             key={item.title}
-            className="border-2 border-Bar px-12 item-center w-[400px] h-[400px]"
+            className="border-2 border-Bar rounded-[8px] px-12 item-center w-[400px] h-[400px]"
           >
             <Image
               src={ellipse}

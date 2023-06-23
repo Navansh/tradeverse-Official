@@ -29,7 +29,9 @@ export const signUp = (email: string, password: string) => {
       // Signed in
       const user = userCredential.user;
       console.log(user);
-      toast.success("Account Created Sucessfully");
+      toast.success("Account Created Sucessfully", {
+        position: "bottom-right"
+      });
       // ...
     })
     .catch((error) => {
@@ -37,7 +39,9 @@ export const signUp = (email: string, password: string) => {
       const errorMessage = error.message;
       // ..
       console.log(errorCode);
-      toast.error(errorMessage);
+      toast.error(errorMessage, {
+        position: "bottom-right"
+      });
     });
 };
 
@@ -47,13 +51,17 @@ export const signIn = (email: string, password: string) => {
     // Signed in 
     const user = userCredential.user;
     console.log(user);
-    toast.success("Account Created Sucessfully");
+    toast.success("Account Created Sucessfully", {
+      position: "bottom-right"
+    });
     // ...
   })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log(errorCode);
-    toast.error(errorMessage);
+    toast.error(errorMessage, {
+      position: "bottom-right"
+    });
   });
 }

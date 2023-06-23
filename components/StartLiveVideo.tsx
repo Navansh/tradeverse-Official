@@ -1,19 +1,42 @@
 import { video } from "@/assets";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import vector from "../assets/vector-1.png";
 import { useTradeContext } from "@/context";
 import { useRouter } from "next/router";
+import { useHuddle01 } from "@huddle01/react";
+import { useLobby } from "@huddle01/react/hooks";
+import axios from "axios";
+import { GetServerSideProps } from "next";
 
 const StartLiveVideo = () => {
   const { getRoomId } = useTradeContext();
+  const [roomId, setRoomId] = useState("");
+  const { initialize, isInitialized } = useHuddle01();
+  const [isLoading, setIsLoading] = useState(false)
+  const { joinLobby } = useLobby();
   const router = useRouter();
+  console.log(roomId);
 
-  const goLive = async () => {
-    const roomId = await getRoomId();
-    if (roomId) {
-      router.push(`/meet/${roomId}`);
+  useEffect(() => {
+    // its preferable to use env vars to store projectId
+    initialize("6WUBy33h6jFb2RkYuwSfuZ5sOHKIZTgS");
+    //console.log(roomId);
+  }, []);
+
+  const handleClick = async () => {
+    try {
+      const id = await getRoomId();
+      setIsLoading(true)
+      setRoomId(id);
+      if (roomId) {
+        setIsLoading(false)
+        router.push(`/meet/${roomId}`);
+      }
+    } catch (error) {
+      console.log(error);
+      // Handle the error accordingly
     }
   };
   return (
@@ -33,7 +56,7 @@ const StartLiveVideo = () => {
           Go live to showcase your products and <br /> communicate with your
           customers
         </p>
-        <Button title="Go Live" isFunc handleClick={goLive} />
+        <Button title={`${isLoading ? "loading" : "Go Live"}`} isFunc handleClick={handleClick} />
       </div>
 
       <div className="flex items-center space-x-4 justify-center ">
@@ -64,3 +87,27 @@ const StartLiveVideo = () => {
 };
 
 export default StartLiveVideo;
+
+export const getServerSideProps: GetServerSideProps<{
+  roomId: string;
+}> = async () => {
+  const { data } = await axios.post(
+    "https://api.huddle01.com/api/v1/create-room",
+    {
+      title: "Huddle01-SDK-Test",
+      roomLock: false,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": "2PCDD8nmkQavcrdx7GKf2DegWfpPYMnR",
+      },
+    }
+  );
+
+  return {
+    props: {
+      roomId: data.roomId,
+    },
+  };
+};

@@ -4,6 +4,7 @@ import {
   Button,
   Contact,
   Feature,
+  Footer,
   HowItWorks,
   MainNav,
   MissionStatement,
@@ -49,6 +50,7 @@ export default function Home() {
         <HowItWorks />
         <Contact />
       </div>
+      <Footer />
     </div>
   );
 }

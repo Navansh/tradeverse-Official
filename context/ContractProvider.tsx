@@ -29,14 +29,15 @@ interface ContractContextTypes {
     _category: string,
     _name: string,
     _lastName: string,
-    _description: string
+    _description: string,
+    _location: string
   ) => Promise<void>;
 }
 
 const ContractContext = createContext<ContractContextTypes | null>(null);
 
 export const ContractProvider = ({ children }: ContractChildren) => {
-  const ProductContract = "0x9319A737d7265cd21AFd7bD22Bd7b19a6F8f070F";
+  const ProductContract = "0xeCC0dCAe75d9AD3bE9Dafd358605f2cFCbDBBd49";
   const productAbi = productJson.abi;
 
   const createAStore = async (
@@ -44,7 +45,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     _category: string,
     _name: string,
     _lastName: string,
-    _description: string
+    _description: string,
+    _location: string
   ) => {
     try {
       if (typeof window != "undefined") {
@@ -54,7 +56,14 @@ export const ContractProvider = ({ children }: ContractChildren) => {
           contractAddress: ProductContract,
           abi: productAbi,
           method: "createAStore",
-          params: [_storeName, _category, _name, _lastName, _description],
+          params: [
+            _storeName,
+            _category,
+            _name,
+            _lastName,
+            _description,
+            _location,
+          ],
           mode: Mode.Write,
         });
         console.log({ res });
@@ -135,7 +144,9 @@ export const useContractContext = (): ContractContextTypes => {
   const context = useContext(ContractContext);
 
   if (context === null) {
-    throw new Error("useContractContext must be used within a TradeVerseProvider");
+    throw new Error(
+      "useContractContext must be used within a TradeVerseProvider"
+    );
   }
 
   return context;

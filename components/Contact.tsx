@@ -6,8 +6,8 @@ import Button from "./Button";
 
 const Contact = () => {
   return (
-    <div className="w-[1280px] lg:h-[657px] h-auto bg-[#1C2631] item-center lg:px-[80px] lg:py-[80px] justify grid md:grid-cols-2 grid-cols-1  gap-[160px] lg:mx-[80px] mt-[80px]">
-      <div className="flex-col space-y-[16px] md:items-start items-center md:text-start">
+    <div className="max-w-[1280px] lg:h-[657px] h-auto bg-[#1C2631] mx-[80px] my-[80px] grid md:grid-cols-2 space-x-[80px] grid-cols-1 p-[80px] rounded-[8px]">
+      <div className="flex-col inline-flex space-y-[16px] md:items-start items-center md:text-start">
         <Image
           src={support}
           alt="plug"
@@ -25,14 +25,16 @@ const Contact = () => {
         </p>
       </div>
 
-      <form action="" className="w-[540px]  px-4 py-2.5 h-[497px]">
+      <form
+        action=""
+        className="w-[540px] space-y-[24px] px-4 py-2.5 h-[497px]"
+      >
         <FormField title="Name" isInput />
-        <FormField title="Name" isInput />
-        <FormField title="Name" isTextArea  />
+        <FormField title="Email" isInput />
+        <FormField title="Message" isTextArea />
         <div className="mt-[16px] flex items-center min-w-full">
-        <Button title="Send Message" isFunc />
+          <Button title="Send Message" isFunc />
         </div>
-       
       </form>
     </div>
   );

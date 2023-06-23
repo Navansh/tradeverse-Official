@@ -22,3 +22,4 @@ export { default as ProductForm } from "./ProductForm";
 export { default as StartLiveVideo } from "./StartLiveVideo";
 export { default as MyProfile } from "./MyProfile";
 export { default as Gallery } from "./Gallery";
+export { default as Footer } from "./Footer";

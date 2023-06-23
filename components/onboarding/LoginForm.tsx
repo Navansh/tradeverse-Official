@@ -4,6 +4,7 @@ import FormField from "../FormField";
 import Button from "../Button";
 import { useRouter } from "next/router";
 import { signIn } from "@/firebase";
+import { toast } from "react-toastify";
 
 //Styles
 const styles = {
@@ -17,8 +18,13 @@ const LoginForm = () => {
 
   const logIn = (e: any) => {
     e.preventDefault();
+    if (!email || !password)
+      return toast.error("Pls Required Field", {
+        position: "bottom-right",
+      });
+
     signIn(email, password);
-    router.push("/onboarding/Auth");
+    router.push("/dashboard/feed");
   };
   return (
     <form onSubmit={logIn} id="login">

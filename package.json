@@ -11,6 +11,7 @@
   "dependencies": {
     "@dataverse/runtime-connector": "^1.0.59",
     "@ensdomains/ensjs": "^3.0.0-alpha.64",
+    "@huddle01/iframe": "^0.0.7",
     "@huddle01/react": "^0.0.11",
     "@livepeer/react": "^2.5.4",
     "@particle-network/auth": "^0.14.1",
@@ -46,6 +47,11 @@
     "typescript": "5.1.3"
   },
   "devDependencies": {
+    "hardhat": "^2.16.0",
     "tailwind-scrollbar": "^3.0.4"
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/joeephwild/Tradeverse.git",
+  "author": "Joseph Omotade <josephomotade0@gmail.com>",
+  "license": "MIT"
 }

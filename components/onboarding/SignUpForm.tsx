@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { auth, signUp } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { useContractContext } from "@/context/ContractProvider";
 
 interface Props {
   setActive: React.Dispatch<React.SetStateAction<string>>;
@@ -74,31 +75,43 @@ const SignUpForm = ({ setActive }: Props) => {
     }
   };
 
-  const handleClick = (e?: any) => {
+  const { createAStore } = useContractContext();
+
+  const handleClick = async (e?: any) => {
     e.preventDefault();
     if (currentStep === 0) {
       if (!name || !lastName || !selectedCategory || !storeName || !description)
         return toast.error("Fill every required part");
       // Perform validation or data handling for the Account step
-
+      const tx = await createAStore(
+        storeName,
+        selectedCategory,
+        name,
+        lastName,
+        description,
+        location
+      );
+      toast.success("Store Created successfully", {
+        position: "bottom-right"
+      });
       // If validation is successful, proceed to the next step
       nextStep();
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
-      if (!email || !password) return toast.error("Enter email and password");
+      if (!email || !password) return toast.error("Enter email and password", {
+        position: "bottom-right"
+      });
       if (password != confirmPassword)
-        return toast.error("Password doesnt match");
+        return toast.error("Password doesnt match", {
+          position: "bottom-right"
+        });
       signUp(email, password);
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          // User is signed in, see docs for a list of available properties
-          // https://firebase.google.com/docs/reference/js/auth.user
           const uid = user.uid;
-          // ...
           router.push("/connect");
         }
       });
-      // If validation is successful, navigate to the "/connect" page
     }
   };
 

@@ -28,6 +28,7 @@ contract Products {
         address[] customer;
         string description;
         string meetingId;
+        string location;
     }
 
     struct Product {
@@ -106,7 +107,8 @@ contract Products {
         string memory _category,
         string memory _name,
         string memory _lastName,
-        string memory _description
+        string memory _description,
+        string memory _location
     ) external {
         Store storage newStore = storeList[msg.sender];
         newStore.storeName = _storeName;
@@ -116,6 +118,8 @@ contract Products {
         newStore.lastName = _lastName;
         newStore.description = _description;
         newStore.isSellerActive = false;
+        newStore.location = _location;
+        allStores.push(newStore);
     }
 
     function addProduct(
@@ -194,7 +198,7 @@ contract Products {
 
     event OrderRefunded(uint256 orderId);
 
-    function refundOrder(uint256 _orderId) external onlySeller(_orderId) {
+    function refundOrder(uint256 _orderId) external onlyBuyer(_orderId) {
         Order storage order = orders[_orderId];
         require(order.isPaid, "Payment has not been made.");
         require(!order.isFulfilled, "Order has already been fulfilled.");
@@ -244,7 +248,7 @@ contract Products {
         return addressToProducts[_owner];
     }
 
-    function startStream(string memory _callId) external returns (bool) {
+    function startStream(string memory _callId) external onlyIfStoreExist returns (bool) {
         Live storage goLive = lives[noOfLives];
         goLive.callId = _callId;
         goLive.storeName = storeList[msg.sender].storeName;

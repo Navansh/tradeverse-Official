@@ -15,7 +15,6 @@ import {
 
 const Connect = () => {
   const { address, setAddress } = useTradeContext();
-  //const [address, setAddress] = useState(false)
   console.log(address);
   const router = useRouter();
 
@@ -36,31 +35,15 @@ const Connect = () => {
       if (typeof window != "undefined") {
         const runtimeConnector = new RuntimeConnector(Extension);
         const wallet = await runtimeConnector?.connectWallet(WALLET.METAMASK);
-        await runtimeConnector?.switchNetwork(314159);
+        await runtimeConnector?.switchNetwork(44787);
         createCapability();
-        console.log(wallet);
+        console.log(wallet.address);
         setAddress(wallet?.address);
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  //const [runtimeConnector, setRuntimeConnector] = useState<RuntimeConnector>();
-
-  /**
- *   const connect = async () => {
-    if (typeof window != "undefined") {
-      const runtimeConnector = new RuntimeConnector(Extension);
-      const wallet = await runtimeConnector?.connectWallet(WALLET.METAMASK);
-      await runtimeConnector?.createCapability({
-        app: "TradeVerses",
-        wallet: WALLET.METAMASK,
-      });
-      setAddress(wallet?.address);
-    }
-  };
- */
 
   return (
     <div className="min-h-screen flex items-center justify-center">
