@@ -11,7 +11,6 @@ const Carousel = ({ children, indicators }: any) => {
   const next = () =>
     setCurr((curr) => (curr === children.length - 1 ? 0 : curr + 1));
   return (
-   
     <div className="overflow-hidden relative">
       <div
         className="flex transition-transform ease-out duration-500"
@@ -32,11 +31,19 @@ const Carousel = ({ children, indicators }: any) => {
           {children?.map((_: any, index: any) => (
             <div onClick={() => setCurr(index)} key={index}>
               {index === curr ? (
-                <Image src={indicators[index]} alt="image indicator"className="h-[80px] w-[80px] bg-gray-300"  />
+                <Image
+                  src={`https://gateway.pinata.cloud/ipfs/${indicators[index]}`}
+                  alt="image indicator"
+                  width={643}
+                  height={643}
+                  className="h-[80px] w-[80px] bg-gray-300"
+                />
               ) : (
                 <Image
-                  src={indicators[index]}
+                  src={`https://gateway.pinata.cloud/ipfs/${indicators[index]}`}
                   alt="image indicator"
+                  width={643}
+                  height={643}
                   className="h-[80px] w-[80px] bg-gray-300 opacity-40"
                 />
               )}

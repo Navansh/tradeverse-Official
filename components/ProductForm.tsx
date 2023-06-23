@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import FormField from "./FormField";
 import Button from "./Button";
 import { AiOutlineClose } from "react-icons/ai";
@@ -7,10 +7,14 @@ import close from "../assets/mingcute-close-fill.png";
 import Image from "next/image";
 import { useContractContext } from "@/context/ContractProvider";
 import { ethers } from "ethers";
+import { useDropzone } from "react-dropzone";
+import { camera } from "@/assets";
 
 const styles = {
   wrapper: "mt-[10%] flex flex-col space-y-8",
 };
+
+import { sendFileToIPFS } from "@/constant/pinata";
 
 const ProductForm = () => {
   const router = useRouter();
@@ -22,10 +26,27 @@ const ProductForm = () => {
   const [category, setCategory] = useState("");
   const [availability, setAvailability] = useState(0);
   const [location, setLocation] = useState("");
-  const [image, setImage] = useState("")
-  const { addProduct } = useContractContext()
-  const [refundTime, setRefundTime] = useState("")
+  const [image, setImage] = useState<string[]>([]);
+  const { addProduct } = useContractContext();
+  const [refundTime, setRefundTime] = useState(0);
 
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    try {
+      const uploadPromises = acceptedFiles.map(async (file) => {
+        const ipfsHash = await sendFileToIPFS(file);
+        return ipfsHash;
+      });
+
+      const hashes = await Promise.all(uploadPromises);
+      console.log(hashes);
+      setImage(hashes);
+    } catch (error) {
+      // Handle error uploading files
+      console.error("Error uploading files:", error);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   // Handle input changes
   const handleTitleChange = (e: any) => {
     setTitle(e.target.value);
@@ -51,14 +72,27 @@ const ProductForm = () => {
     setLocation(e.target.value);
   };
 
-  const handleSubmit  = (e: any) => {
-    e.preventDefault()
-    const amount = ethers.utils.parseEther("0.6")
-    addProduct("ldldld", "lll", "dll", "dkldl" , amount,  "dkdk", 5, "jdj" )
-  }
+  const handleRefundChange = (e: any) => {
+    setRefundTime(e.target.value);
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const amount = ethers.utils.parseEther("0.6");
+    addProduct(
+      title,
+      category,
+      image,
+      description,
+      amount,
+      location,
+      availability,
+      refundTime
+    );
+  };
 
   return (
-    <div className="h-screen overflow-auto scrollbar-hide">
+    <div className="h-screen overflow-auto py-[80px] scrollbar-hide">
       <div className="flex-1 m-6 items-start">
         <div
           onClick={() => router.back()}
@@ -70,8 +104,35 @@ const ProductForm = () => {
             className="w-[20px] h-[20px] object-contain"
           />
         </div>
-        <form onSubmit={handleSubmit} action="" className="flex flex-wrap  items-start gap-12">
-          <FormField title="" isImage />
+        <form
+          onSubmit={handleSubmit}
+          action=""
+          className="flex flex-wrap  items-start gap-12"
+        >
+          <div
+            {...getRootProps()}
+            className="min-w-[543px] h-[522px] border-Bar border-2 px-6 py-3.5 flex items-center justify-center"
+          >
+            <div className="flex flex-col space-y-9 items-center justif-center w-full">
+              <div className="bg-white/30 w-[80px] h-[80px] flex items-center justify-center rounded-full ">
+                <Image
+                  src={camera}
+                  alt="upload"
+                  className="w-[40px] h-[32px] object-cover"
+                />
+              </div>
+              <div>
+                <h1 className="text-[24px] leading-[29.13px] font-bold">
+                  Add Photos/Videos
+                </h1>
+                <input {...getInputProps({ multiple: true })} />
+                <span className="text-[14px] leading-[24px] font-normal">
+                  or drag and drop from your device
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className="border-2 space-y-4 border-Bar w-[572px] min-h-[770px] px-6 py-12">
             <h2 className="text-[24px] font-bold leading-[28-13px]">
               Required
@@ -94,7 +155,7 @@ const ProductForm = () => {
               />
               <FormField
                 title="Price"
-                type="text"
+                type="number"
                 isInput
                 value={price}
                 handleChange={handlePriceChange}
@@ -118,6 +179,12 @@ const ProductForm = () => {
                 isInput
                 value={location}
                 handleChange={handleLocationChange}
+              />
+              <FormField
+                title="RefundTime"
+                type="number"
+                isInput
+                handleChange={handleRefundChange}
               />
               <div className="flex w-full items-cente mt-7">
                 <Button isFunc title="Continue" />

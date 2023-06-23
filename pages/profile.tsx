@@ -10,8 +10,7 @@ const PersonalProfile = () => {
       <div className="flex items-start">
         <Sidebar />
         <div className="mx-[40px]">
-              <MyProfile />
-        
+               <MyProfile />
         </div>
       </div>
     </>

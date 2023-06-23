@@ -34,7 +34,7 @@ contract Products {
     struct Product {
         string name;
         string category;
-        string imageLink;
+        string[] imageLink;
         string descLink;
         uint price;
         uint index;
@@ -137,7 +137,7 @@ contract Products {
     function addProduct(
         string memory _name,
         string memory _category,
-        string memory _imageLink,
+        string[] memory _imageLink,
         string memory _descLink,
         uint _price,
         string memory _location,

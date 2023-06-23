@@ -1,3 +1,4 @@
+'use client'
 import { product, profile } from "@/assets";
 import Image from "next/image";
 import React from "react";
@@ -5,9 +6,27 @@ import { FaMicrophoneAlt } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import CategoryCard from "./CategoryCard";
 import { products } from "@/constant";
+import { useContractContext } from "@/context/ContractProvider";
+import { Love_Light } from "next/font/google";
+
+
+interface Product {
+  name: string
+  desc: string
+  image: never[]
+  price: number
+  category: string
+  pid: number
+  quantity: number
+  location: string
+  max: number
+  owner: string
+  refund: number
+}
 
 const Mainbody = () => {
-  
+  const {allProduct } = useContractContext()
+  console.log(allProduct)
   return (
     <div className="flex-1 h-screen pb-[30px] mx-9 flex flex-col items-start mt-9">
       <div className="flex border-b-2 border-Foundation w-full py-6 items-center">
@@ -22,8 +41,8 @@ const Mainbody = () => {
 
       {/** product */}
       <div className="border-b-2 border-Foundation flex !flex-wrap items-start justify-start gap-12 pb-24 w-ful">
-        {products.map((item, i) => (
-          <ProductCard key={i} item={item} />
+        {allProduct.map((item: Product, i: any) => (
+          <ProductCard key={i} {...item} />
         ))}
       </div>
 

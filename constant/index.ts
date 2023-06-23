@@ -18,7 +18,7 @@ import { GiRolledCloth } from "react-icons/gi";
 import { product, product2, product3, product4, product5 } from "@/assets";
 import { ParticleNetwork, WalletEntryPosition } from "@particle-network/auth";
 import { ParticleProvider } from "@particle-network/provider";
-import productJson from '../context/Products.json'
+import productJson from './Products.json'
 
 const category = [
   {
@@ -283,7 +283,7 @@ const particle = new ParticleNetwork({
     customStyle: {}, //optional: custom wallet style
   },
 });
-const ProductContract = "0xbe9a1bD1FA89EbdE4A2381EFd708717c6e011a7C";
+const ProductContract = "0xc853255C2cD41aF8CAcF5e79480950f250FCeb94";
 const productAbi = productJson.abi;
 
 
@@ -295,6 +295,7 @@ export default function connectWithContract() {
 
   // Getting the signer
   const signer = provider.getSigner();
+  console.log(signer)
 
   // Creating a new contract factory with the signer, address and ABI
   const contract = new ethers.Contract(
