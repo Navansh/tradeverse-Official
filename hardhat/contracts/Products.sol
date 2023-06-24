@@ -161,7 +161,7 @@ contract Products {
         string memory _location,
         uint256 _maxQuantity,
         uint256 _refundTimeLimit
-    ) public onlyOwner onlyIfStoreExist returns (uint) {
+    ) public onlyIfStoreExist returns (uint) {
         require(msg.sender != address(0), "Invalid sender address.");
         productsId++;
         Product storage newProduct = products[productsId];
@@ -281,7 +281,7 @@ contract Products {
         goLive.callId = _callId;
         goLive.storeName = storeList[msg.sender].storeName;
         storeList[msg.sender].isSellerActive = true;
-        storeList[msg.sender].meetingId = _callId;
+        storeList[msg.sender].meetingId = _callId; 
         addressToSingleProduct[msg.sender].sellerActive = true;
         addressToSingleProduct[msg.sender].meetingId = _callId;
         return storeList[msg.sender].isSellerActive;
