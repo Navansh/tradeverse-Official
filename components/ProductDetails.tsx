@@ -20,6 +20,7 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
+  active: boolean
 }
 
 type Props = {
