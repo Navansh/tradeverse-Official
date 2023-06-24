@@ -1,7 +1,7 @@
 import { celo, product } from "@/assets";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { FaChevronRight } from "react-icons/fa";
+import { FaArrowRight, FaChevronRight } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
 import Link from "next/link";
 import { useTradeContext } from "@/context";
@@ -20,7 +20,7 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
-  active: boolean
+  active: boolean;
 }
 // interface Type {
 //   item: Props;
@@ -38,7 +38,7 @@ const ProductCard = ({
   pid,
   quantity,
   refund,
-  active
+  active,
 }: Product) => {
   const { handleAddToCart } = useTradeContext();
   //console.log(image[0])
@@ -80,9 +80,12 @@ const ProductCard = ({
             className="max-w-[278px] max-h-[278px] object-cover p-4 bg-no-repeat rounded-[4px]"
           />
         )}
-        <div className="absolute top0 right-0">
+        <div className="absolute top-0 right-0  ">
           {active === false && (
-            <div className="bg-red-700"></div>
+            <Link href={``} className="bg-[#F90000] gap-[4px] flex items-center justify-end">
+              <span>Seller is Live</span>
+              <FaArrowRight size={16} />
+            </Link>
           )}
         </div>
       </div>
@@ -91,8 +94,10 @@ const ProductCard = ({
           {truncateText(name, 25)}
         </span>
         <h3 className="text-[24px] flex items-center font-bold pt-[8px]">
-          ${price} - <span className="flex ietms-center">{ethereumPrice}
-          <Image src={celo} alt="celo" className="w-6 h-6 object-contain" />
+          ${price} -{" "}
+          <span className="flex ietms-center">
+            {ethereumPrice}
+            <Image src={celo} alt="celo" className="w-6 h-6 object-contain" />
           </span>
         </h3>
         <div className="flex items-center text-center">

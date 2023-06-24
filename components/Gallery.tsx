@@ -14,7 +14,8 @@ interface Product {
   location: string
   max: number
   owner: string
-  refund: number
+  refund: number,
+  active: boolean
 }
 
 const Gallery = () => {
