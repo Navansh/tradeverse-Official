@@ -95,10 +95,6 @@ const SignUpForm = ({ setActive }: Props) => {
       );
       setIsLoading(false);
       if (!isLoading) {
-        toast.success("Store Created successfully", {
-          position: "bottom-right",
-        });
-        // If validation is successful, proceed to the next step
         nextStep();
       }
     } else if (currentStep === 1) {

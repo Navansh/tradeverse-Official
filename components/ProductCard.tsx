@@ -1,4 +1,4 @@
-import { product } from "@/assets";
+import { celo, product } from "@/assets";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FaChevronRight } from "react-icons/fa";
@@ -20,6 +20,7 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
+  active: boolean
 }
 // interface Type {
 //   item: Props;
@@ -37,6 +38,7 @@ const ProductCard = ({
   pid,
   quantity,
   refund,
+  active
 }: Product) => {
   const { handleAddToCart } = useTradeContext();
   //console.log(image[0])
@@ -53,7 +55,11 @@ const ProductCard = ({
   useEffect(() => {
     async function getEthereumPrice() {
       try {
-        const ethereumAmount = await convertToEthereum(price, "ethereum", "usd");
+        const ethereumAmount = await convertToEthereum(
+          price,
+          "ethereum",
+          "usd"
+        );
         setEthereumPrice(ethereumAmount);
       } catch (error) {
         console.error("Error:", error);
@@ -74,12 +80,21 @@ const ProductCard = ({
             className="max-w-[278px] max-h-[278px] object-cover p-4 bg-no-repeat rounded-[4px]"
           />
         )}
+        <div className="absolute top0 right-0">
+          {active === false && (
+            <div className="bg-red-700"></div>
+          )}
+        </div>
       </div>
       <div className="flex flex-col items-start px-[16px]">
         <span className="truncate text-[18px] pt-[16px]">
           {truncateText(name, 25)}
         </span>
-        <h3 className="text-[24px] font-bold pt-[8px]">{price} - {ethereumPrice}</h3>
+        <h3 className="text-[24px] flex items-center font-bold pt-[8px]">
+          ${price} - <span className="flex ietms-center">{ethereumPrice}
+          <Image src={celo} alt="celo" className="w-6 h-6 object-contain" />
+          </span>
+        </h3>
         <div className="flex items-center text-center">
           <BsDot className="text-green text-xl" />
           <span className="text-[14px] font-medium pb-[8px]">{location}</span>

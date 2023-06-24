@@ -15,6 +15,7 @@ const styles = {
 };
 
 import { sendFileToIPFS } from "@/constant/pinata";
+import { category } from "@/constant";
 
 const ProductForm = () => {
   const router = useRouter();
@@ -23,12 +24,13 @@ const ProductForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [category, setCategory] = useState("");
+  const [categories, setCategory] = useState("");
   const [availability, setAvailability] = useState(0);
   const [location, setLocation] = useState("");
   const [image, setImage] = useState<string[]>([]);
   const { addProduct } = useContractContext();
   const [refundTime, setRefundTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     try {
@@ -36,10 +38,11 @@ const ProductForm = () => {
         const ipfsHash = await sendFileToIPFS(file);
         return ipfsHash;
       });
-
+      setIsLoading(true);
       const hashes = await Promise.all(uploadPromises);
       console.log(hashes);
       setImage(hashes);
+      setIsLoading(false);
     } catch (error) {
       // Handle error uploading files
       console.error("Error uploading files:", error);
@@ -80,7 +83,7 @@ const ProductForm = () => {
     e.preventDefault();
     addProduct(
       title,
-      category,
+      categories,
       image,
       description,
       price,
@@ -88,7 +91,6 @@ const ProductForm = () => {
       availability,
       refundTime
     );
-    router.push("/dashboard/feed");
   };
 
   return (
@@ -123,7 +125,7 @@ const ProductForm = () => {
               </div>
               <div>
                 <h1 className="text-[24px] leading-[29.13px] font-bold">
-                  Add Photos/Videos
+                  {isLoading ? "Loading...." : "Add Photos/Videos"}
                 </h1>
                 <input {...getInputProps({ multiple: true })} />
                 <span className="text-[14px] leading-[24px] font-normal">
@@ -160,10 +162,10 @@ const ProductForm = () => {
                 handleChange={handlePriceChange}
               />
               <FormField
-                title="Category"
-                type="text"
-                isInput
-                value={category}
+                title="What do you want to sell *"
+                type="select"
+                isCategory
+                item={category}
                 handleChange={handleCategoryChange}
               />
               <FormField
@@ -180,7 +182,7 @@ const ProductForm = () => {
                 handleChange={handleLocationChange}
               />
               <FormField
-                title="RefundTime"
+                title="Shipping Fee"
                 type="number"
                 isInput
                 handleChange={handleRefundChange}

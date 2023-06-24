@@ -21,6 +21,7 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
+  active: boolean
 }
 
 const Mainbody = () => {

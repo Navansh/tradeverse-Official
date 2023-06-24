@@ -43,6 +43,8 @@ contract Products {
         uint256 maxQuantity;
         address payable owner;
         uint256 shippingFee;
+        bool sellerActive;
+        string meetingId;
     }
 
     struct Order {
@@ -70,6 +72,7 @@ contract Products {
     mapping(address => bool) public arbiters;
     mapping(uint256 => Product) products;
     mapping(address => Product[]) addressToProducts;
+    mapping(address => Product) addressToSingleProduct;
     mapping(address => Store) storeList;
     uint256 productsId;
     uint256 noOfLives;
@@ -173,6 +176,7 @@ contract Products {
         newProduct.price = _price;
         newProduct.status = OrderStatus.Available;
         newProduct.shippingFee = _refundTimeLimit;
+        newProduct.sellerActive = false;
         allProduct.push(newProduct);
         return productsId;
     }
@@ -278,6 +282,8 @@ contract Products {
         goLive.storeName = storeList[msg.sender].storeName;
         storeList[msg.sender].isSellerActive = true;
         storeList[msg.sender].meetingId = _callId;
+        addressToSingleProduct[msg.sender].sellerActive = true;
+        addressToSingleProduct[msg.sender].meetingId = _callId;
         return storeList[msg.sender].isSellerActive;
     }
 
@@ -288,6 +294,7 @@ contract Products {
     function cancelLive(uint256 _id) external returns (bool) {
         delete lives[_id];
         storeList[msg.sender].isSellerActive = false;
+        addressToSingleProduct[msg.sender].sellerActive = false;
         return storeList[msg.sender].isSellerActive;
     }
 

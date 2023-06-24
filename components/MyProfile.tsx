@@ -1,6 +1,6 @@
 import { bgImage } from "@/assets";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import Gallery from "./Gallery";
 import { useContractContext } from "@/context/ContractProvider";
@@ -16,9 +16,12 @@ interface Props {
 
 const MyProfile = () => {
   const [active, setActive] = useState("about");
-  const { storeDetail, currentUserStore } = useContractContext();
+  const { storeDetail, currentUserStore, setSellerIsActive,  } = useContractContext();
   console.log(currentUserStore)
 
+  useEffect(() => {
+     
+  })
   
   return (
     <div className="h-screen overflow-y-scroll scrollbar-hide">
@@ -54,7 +57,7 @@ const MyProfile = () => {
           {item?.storeName}
           </h1>
           <p className="flex flex-col w-[800px] flex-shrink-0 text-[16px] leading-[24px]">
-          {item?.description}
+          {item?.desc}
           </p>
         </div>
 

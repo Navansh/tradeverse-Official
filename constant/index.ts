@@ -277,7 +277,7 @@ const particle = new ParticleNetwork({
     customStyle: {}, //optional: custom wallet style
   },
 });
-const ProductContract = "0xcEC0E9Dfb38F85Cc23f67B720BA2659CDb1EA2D1";
+const ProductContract = "0xC10555e5b66323fa5Aab459D702d6ffb79Bd41D0";
 const productAbi = productJson.abi;
 
 const particleProvider = new ParticleProvider(particle.auth);

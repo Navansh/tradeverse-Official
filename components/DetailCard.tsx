@@ -52,6 +52,7 @@ const DetailCard = ({ item }: Props) => {
     );
   };
 
+
   useEffect(() => {
     async function getEthereumPrice() {
       try {

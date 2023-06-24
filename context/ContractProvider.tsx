@@ -9,6 +9,7 @@ import {
 import { ethers } from "ethers";
 import connectWithContract from "@/constant";
 import { useAccount, useAccountInfo } from "@particle-network/connect-react-ui";
+import { toast } from "react-toastify";
 
 interface ContractChildren {
   children: React.ReactNode;
@@ -38,21 +39,26 @@ interface ContractContextTypes {
   currentUserStore: never[];
   userProduct: never[];
   allProduct: never[];
-  cancelLiveEvent: (id: number) => Promise<any>
-  startStream: (callId: string) => Promise<void>
-  productByAddress: (id: string) => Promise<any>
-  isSellerActive: (id: string) => Promise<any>
+  cancelLiveEvent: (id: number) => Promise<any>;
+  startStream: (callId: string) => Promise<void>;
+  productByAddress: (id: string) => Promise<any>;
+  isSellerActive: (id: string) => Promise<any>;
+  isLoading: boolean;
+  setSellerIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  sellerIsActive: boolean;
 }
 
 const ContractContext = createContext<ContractContextTypes | null>(null);
 
 export const ContractProvider = ({ children }: ContractChildren) => {
+  const [isLoading, setIsLoading] = useState(false);
   const account = useAccount();
   const [storeDetail, setStoreDetails] = useState([]);
   const [currentUserStore, setcurrentUserStore] = useState([]);
   const [allProduct, setAllProduct] = useState([]);
   const [userProduct, setUserProduct] = useState([]);
-  const [liveEvent, setLiveEvent] = useState([])
+  const [liveEvent, setLiveEvent] = useState([]);
+  const [sellerIsActive, setSellerIsActive] = useState(false);
   //console.log(currentUserStore);
 
   const createAStore = async (
@@ -65,6 +71,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   ) => {
     try {
       const contract = await connectWithContract();
+      setIsLoading(true);
       const tx = await contract.createAStore(
         _storeName,
         _category,
@@ -75,17 +82,22 @@ export const ContractProvider = ({ children }: ContractChildren) => {
       );
       console.log(tx);
       await tx.wait();
+      setIsLoading(false);
+      toast.success("Store successfully Created");
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
   const getStoreDetails = async () => {
     try {
       const result = await connectWithContract();
+      setIsLoading(true);
       const tx = await result.getStoreDetails();
       // console.log(tx);
       setStoreDetails(tx);
+      setIsLoading(false);
       return tx; // Return the fetched store details
     } catch (error) {
       console.error(error);
@@ -98,20 +110,19 @@ export const ContractProvider = ({ children }: ContractChildren) => {
       const result = await connectWithContract();
       const tx = await result.getProductByAddress(id);
       console.log(tx);
-      return tx; 
+      return tx;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of error
     }
   };
 
-  
   const cancelLiveEvent = async (id: number) => {
     try {
       const result = await connectWithContract();
       const tx = await result.cancelLive(id);
       // console.log(tx);
-      return tx; 
+      return tx;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of error
@@ -122,8 +133,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     try {
       const result = await connectWithContract();
       const tx = await result.isSellerActive(id);
-      // console.log(tx);
-      return tx; 
+      console.log(tx);
+      return tx;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of error
@@ -135,8 +146,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
       const result = await connectWithContract();
       const tx = await result.getLiveDetail();
       console.log(tx);
-      setLiveEvent(tx)
-      return tx; 
+      setLiveEvent(tx);
+      return tx;
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of error
@@ -152,16 +163,17 @@ export const ContractProvider = ({ children }: ContractChildren) => {
         name: item.name,
         desc: item.descLink,
         image: item.imageLink,
-        price: ethers.utils.formatEther(item.price),
+        price: Number(item.price),
         category: item.category,
         pid: Number(item.index),
         quantity: Number(item.quantity),
         location: item.location,
         max: Number(item.maxQuantity),
         owner: item.owner,
-        refund: Number(item.refundTimeLimit),
+        refund: item.refundTimeLimit,
+        active: item.sellerActive
       }));
-      // console.log(parsedProduct);
+      console.log(parsedProduct);
       setAllProduct(parsedProduct);
       return tx; // Return the fetched store details
     } catch (error) {
@@ -199,9 +211,11 @@ export const ContractProvider = ({ children }: ContractChildren) => {
       name: item.name,
       desc: item.description,
       customer: item.customer,
+      isActive: item.isSellerActive,
+      storeName: item.storeName,
     }));
-    //console.log(parsedStore)
-    setcurrentUserStore(userStore);
+    console.log(parsedStore);
+    setcurrentUserStore(parsedStore);
     console.log(userStore);
   };
 
@@ -210,14 +224,14 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     filterForUserStore();
     getProductDetails();
     filterForUserProduct();
-    getLiveEVnt()
+    getLiveEVnt();
   }, [account]);
 
   const placeOrder = async (id: number, _price: number) => {
     try {
       const result = await connectWithContract();
       const tx = await result.placeOrder(id, {
-        value: ethers.utils.parseEther(_price.toString())
+        value: ethers.utils.parseEther(_price.toString()),
       });
       await tx.wait();
     } catch (error) {
@@ -228,9 +242,12 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   const startStream = async (callId: string) => {
     try {
       const result = await connectWithContract();
+      setIsLoading(true);
       const tx = await result.startStream(callId);
       await tx.wait();
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -247,6 +264,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   ) => {
     try {
       const result = await connectWithContract();
+      setIsLoading(true);
       const tx = await result.addProduct(
         _name,
         _category,
@@ -258,6 +276,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
         _refundTimeLimit
       );
       console.log(tx);
+      setIsLoading(false);
+      toast.success("Product listed sucessfully");
     } catch (error) {
       console.log(error);
     }
@@ -273,7 +293,10 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     startStream,
     cancelLiveEvent,
     productByAddress,
-    isSellerActive
+    isSellerActive,
+    isLoading,
+    sellerIsActive,
+    setSellerIsActive,
   };
   return (
     <ContractContext.Provider value={value}>
