@@ -21,7 +21,7 @@ interface Product {
 const Details = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { allProduct } = useContractContext();
+  const { allProduct, productByAddress } = useContractContext();
   const [product, setProduct] = useState<Product | undefined>(undefined);
   console.log(product)
 

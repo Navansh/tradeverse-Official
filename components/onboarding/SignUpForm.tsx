@@ -115,7 +115,7 @@ const SignUpForm = ({ setActive }: Props) => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           const uid = user.uid;
-          router.push("/connect");
+          router.push("/profile");
         }
       });
     }

@@ -1,5 +1,5 @@
-import { Celo } from '@particle-network/common';
-import { CeloTestnet } from '@particle-network/common';
+import { Celo } from "@particle-network/common";
+import { CeloTestnet } from "@particle-network/common";
 import { ethers } from "ethers";
 import Product from "./Products.json";
 import {
@@ -18,7 +18,7 @@ import { GiRolledCloth } from "react-icons/gi";
 import { product, product2, product3, product4, product5 } from "@/assets";
 import { ParticleNetwork, WalletEntryPosition } from "@particle-network/auth";
 import { ParticleProvider } from "@particle-network/provider";
-import productJson from './Products.json'
+import productJson from "./Products.json";
 
 const category = [
   {
@@ -170,13 +170,7 @@ const products: Props[] = [
     quantity: 0,
   },
   {
-    image: [
-     product,
-      product,
-      product,
-      product,
-      product,
-    ],
+    image: [product, product, product, product, product],
     title: "Macbook M2 Chip",
     price: "$4,000 - 0.002 ETH",
     location: "Port Harcourt, Rivers state",
@@ -283,9 +277,8 @@ const particle = new ParticleNetwork({
     customStyle: {}, //optional: custom wallet style
   },
 });
-const ProductContract = "0xc853255C2cD41aF8CAcF5e79480950f250FCeb94";
+const ProductContract = "0xcEC0E9Dfb38F85Cc23f67B720BA2659CDb1EA2D1";
 const productAbi = productJson.abi;
-
 
 const particleProvider = new ParticleProvider(particle.auth);
 
@@ -295,14 +288,10 @@ export default function connectWithContract() {
 
   // Getting the signer
   const signer = provider.getSigner();
-  console.log(signer)
+  console.log(signer);
 
   // Creating a new contract factory with the signer, address and ABI
-  const contract = new ethers.Contract(
-    ProductContract,
-    productAbi,
-    signer
-  );
+  const contract = new ethers.Contract(ProductContract, productAbi, signer);
 
   return contract;
 }

@@ -20,12 +20,12 @@ interface ContractContextTypes {
     _category: string,
     _imageLink: string[],
     _descLink: string,
-    _price: ethers.BigNumber,
+    _price: number,
     _location: string,
     _maxQuantity: number,
     _refundTimeLimit: number
   ) => Promise<void>;
-  placeOrder: (id: number, _price: number, _arbiter: string) => Promise<void>;
+  placeOrder: (id: number, _price: number) => Promise<void>;
   createAStore: (
     _storeName: string,
     _category: string,
@@ -38,19 +38,21 @@ interface ContractContextTypes {
   currentUserStore: never[];
   userProduct: never[];
   allProduct: never[];
+  cancelLiveEvent: (id: number) => Promise<any>
   startStream: (callId: string) => Promise<void>
+  productByAddress: (id: string) => Promise<any>
+  isSellerActive: (id: string) => Promise<any>
 }
 
 const ContractContext = createContext<ContractContextTypes | null>(null);
 
 export const ContractProvider = ({ children }: ContractChildren) => {
-  const ProductContract = "0xeCC0dCAe75d9AD3bE9Dafd358605f2cFCbDBBd49";
-  const productAbi = productJson.abi;
   const account = useAccount();
   const [storeDetail, setStoreDetails] = useState([]);
   const [currentUserStore, setcurrentUserStore] = useState([]);
   const [allProduct, setAllProduct] = useState([]);
   const [userProduct, setUserProduct] = useState([]);
+  const [liveEvent, setLiveEvent] = useState([])
   //console.log(currentUserStore);
 
   const createAStore = async (
@@ -85,6 +87,56 @@ export const ContractProvider = ({ children }: ContractChildren) => {
       // console.log(tx);
       setStoreDetails(tx);
       return tx; // Return the fetched store details
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  const productByAddress = async (id: string) => {
+    try {
+      const result = await connectWithContract();
+      const tx = await result.getProductByAddress(id);
+      console.log(tx);
+      return tx; 
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  
+  const cancelLiveEvent = async (id: number) => {
+    try {
+      const result = await connectWithContract();
+      const tx = await result.cancelLive(id);
+      // console.log(tx);
+      return tx; 
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  const isSellerActive = async (id: string) => {
+    try {
+      const result = await connectWithContract();
+      const tx = await result.isSellerActive(id);
+      // console.log(tx);
+      return tx; 
+    } catch (error) {
+      console.error(error);
+      return []; // Return an empty array in case of error
+    }
+  };
+
+  const getLiveEVnt = async () => {
+    try {
+      const result = await connectWithContract();
+      const tx = await result.getLiveDetail();
+      console.log(tx);
+      setLiveEvent(tx)
+      return tx; 
     } catch (error) {
       console.error(error);
       return []; // Return an empty array in case of error
@@ -158,14 +210,15 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     filterForUserStore();
     getProductDetails();
     filterForUserProduct();
+    getLiveEVnt()
   }, [account]);
 
-  const placeOrder = async (id: number, _price: number, _arbiter: string) => {
+  const placeOrder = async (id: number, _price: number) => {
     try {
       const result = await connectWithContract();
       const tx = await result.placeOrder(id, {
         value: ethers.utils.parseEther(_price.toString())
-      }, _arbiter);
+      });
       await tx.wait();
     } catch (error) {
       console.log(error);
@@ -187,7 +240,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     _category: string,
     _imageLink: string[],
     _descLink: string,
-    _price: ethers.BigNumber,
+    _price: number,
     _location: string,
     _maxQuantity: number,
     _refundTimeLimit: number
@@ -217,7 +270,10 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     currentUserStore,
     userProduct,
     allProduct,
-    startStream
+    startStream,
+    cancelLiveEvent,
+    productByAddress,
+    isSellerActive
   };
   return (
     <ContractContext.Provider value={value}>

@@ -39,11 +39,10 @@ contract Products {
         uint price;
         uint index;
         OrderStatus status;
-        uint256 quantity;
         string location;
         uint256 maxQuantity;
         address payable owner;
-        uint256 refundTimeLimit;
+        uint256 shippingFee;
     }
 
     struct Order {
@@ -58,8 +57,14 @@ contract Products {
         Escrow escrow; // Instance of the Escrow contract
     }
 
+    struct StoreImage {
+        string profile;
+        string coverImage;
+    }
+
     address owner;
     uint256 public orderIdCounter;
+    mapping(address => StoreImage) addressToImages;
     mapping(uint256 => Live) lives;
     mapping(uint256 => Order) public orders;
     mapping(address => bool) public arbiters;
@@ -72,6 +77,16 @@ contract Products {
     Store[] allStores;
     Live[] allLives;
     Order[] allOrders;
+
+    function addProfile(string memory _profile) external {
+        StoreImage storage newProfile = addressToImages[msg.sender];
+        newProfile.profile = _profile;
+    }
+
+    function addCoverImage(string memory _profile) external {
+        StoreImage storage newProfile = addressToImages[msg.sender];
+        newProfile.profile = _profile;
+    }
 
     event OrderCreated(
         uint256 orderId,
@@ -156,18 +171,13 @@ contract Products {
         newProduct.location = _location;
         newProduct.maxQuantity = _maxQuantity;
         newProduct.price = _price;
-        newProduct.quantity = 0;
         newProduct.status = OrderStatus.Available;
-        newProduct.refundTimeLimit = _refundTimeLimit;
+        newProduct.shippingFee = _refundTimeLimit;
         allProduct.push(newProduct);
         return productsId;
     }
 
-    function placeOrder(
-        uint256 id,
-        uint256 _price,
-        address payable _arbiter
-    ) public payable {
+    function placeOrder(uint256 id, uint256 _price) public payable {
         Order storage newOrder = orders[orderIdCounter];
         require(msg.value >= products[id].price, "Insufficient payment.");
         require(!newOrder.isPaid, "Payment has already been made.");
@@ -177,7 +187,11 @@ contract Products {
         );
         address payable _seller = products[id].owner; // Only allow the owner to sell items for now
         Escrow escrowInstance = new Escrow();
-        escrowInstance.initialize(_seller, _arbiter, _price);
+        escrowInstance.initialize(
+            _seller,
+            0x8D45EA72697C5f395EE1509cB39067Cb977d9Cb6,
+            _price
+        );
         escrowInstance.deposit{value: msg.value}();
         orderIdCounter++;
         newOrder.orderId = orderIdCounter;
@@ -224,16 +238,10 @@ contract Products {
 
     event OrderRefunded(uint256 orderId);
 
-    function refundOrder(uint256 _orderId) external onlyBuyer(_orderId) {
+    function refundOrder(uint256 _orderId) external onlySeller(_orderId) {
         Order storage order = orders[_orderId];
         require(order.isPaid, "Payment has not been made.");
         require(!order.isFulfilled, "Order has already been fulfilled.");
-
-        // Check if the refund request is made within the time limit
-        require(
-            block.timestamp >= products[_orderId].refundTimeLimit,
-            "Refund time limit has not been reached."
-        );
 
         // Call the refundBuyer function in the Escrow contract
         order.escrow.refundBuyer();
@@ -281,5 +289,9 @@ contract Products {
         delete lives[_id];
         storeList[msg.sender].isSellerActive = false;
         return storeList[msg.sender].isSellerActive;
+    }
+
+    function isSellerActive(address _owner) external view returns (bool) {
+        return storeList[_owner].isSellerActive;
     }
 }

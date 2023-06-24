@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Carousel from "./Carousel";
 import DetailCard from "./DetailCard";
 import { FaArrowLeft } from "react-icons/fa";
@@ -27,10 +27,15 @@ type Props = {
 };
 
 const ProductDetails = ({ item }: Props) => {
-  console.log(item)
+  console.log(item);
   const router = useRouter();
-  const { allProduct } = useContractContext();
-  console.log(item)
+  const { allProduct, productByAddress } = useContractContext();
+  console.log(item);
+
+  useEffect(() => {
+    const product = productByAddress(item.owner);
+    console.log(product)
+  }, [item.owner]);
 
   if (!item || !item.image || item.image.length === 0) {
     // Handle missing or empty data
@@ -58,7 +63,6 @@ const ProductDetails = ({ item }: Props) => {
                     alt={`product-${i}`}
                     key={i}
                     className="min-w-[643px] max-h-[643px] object-cover"
-                    
                   />
                 ))}
               </Carousel>

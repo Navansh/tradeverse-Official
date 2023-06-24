@@ -11,7 +11,7 @@ const Sidebar = () => {
 
   const router = useRouter();
   return (
-    <div className="w-[22%] h-screen bg-Bar pb-12 overflow-y-scroll scrollbar hidden lg:flex flex-col items-center scrollbar-track-transparent scrollbar-thumb-Foundation">
+    <div className="w-[20%] h-screen bg-Bar pb-12 overflow-y-scroll scrollbar hidden lg:flex flex-col items-center scrollbar-track-transparent scrollbar-thumb-Foundation">
       <div className="px-6 flex flex-col items-start py-6 space-y-9 mt-5">
         {Tab.map((item, i) => (
           <Link key={i} href={item.route}>
@@ -19,7 +19,7 @@ const Sidebar = () => {
               onClick={() => {
                 setActive(item.active);
               }}
-              className="flex cursor-pointer items-center space-x-3"
+              className="flex cursor-pointer items-start space-x-3"
             >
               <div
                 className={`${

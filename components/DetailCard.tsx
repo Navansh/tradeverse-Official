@@ -40,15 +40,15 @@ const DetailCard = ({ item }: Props) => {
     isActive: false,
     activeRoute: "",
   });
-  const { placeOrder } = useContractContext();
+  const [isActive ,setIsActive] = useState(false)
+  const { placeOrder, isSellerActive } = useContractContext();
 
   const [transactionFee, setTransactionFee] = useState<number | null>(null);
 
   const handlePurchase = async () => {
     await placeOrder(
       item.pid,
-      item.price,
-      "0xAB1c6e48eB09AC76ba09C743B3EDFa5dC59463D3"
+      item.price
     );
   };
 
@@ -83,6 +83,12 @@ const DetailCard = ({ item }: Props) => {
       });
   }, []);
 
+
+  useEffect(() => {
+  const tx = isSellerActive(item.owner)
+  console.log(tx)
+  }, [item.owner])
+
   const formattedTransactionFee = formatCurrency(transactionFee, "USD");
 
   const transFee = formattedTransactionFee !== null ? formattedTransactionFee.toFixed(0) : "N/A"
@@ -100,8 +106,6 @@ const DetailCard = ({ item }: Props) => {
     const total = calculateTotalAmount();
     setTotalAmount(total);
   }, []);
-
-  
 
   const info = [
     {

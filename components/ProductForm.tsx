@@ -22,7 +22,7 @@ const ProductForm = () => {
   // State variables
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(0);
   const [category, setCategory] = useState("");
   const [availability, setAvailability] = useState(0);
   const [location, setLocation] = useState("");
@@ -78,18 +78,16 @@ const ProductForm = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const amount = ethers.utils.parseEther("0.6");
     addProduct(
       title,
       category,
       image,
       description,
-      amount,
+      price,
       location,
       availability,
       refundTime
     );
-    window.location.reload();
     router.push("/dashboard/feed");
   };
 
@@ -159,7 +157,6 @@ const ProductForm = () => {
                 title="Price"
                 type="number"
                 isInput
-                value={price}
                 handleChange={handlePriceChange}
               />
               <FormField
