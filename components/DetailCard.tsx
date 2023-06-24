@@ -45,13 +45,14 @@ const DetailCard = ({ item }: Props) => {
   });
   const [isActive ,setIsActive] = useState(false)
   const { placeOrder, isSellerActive } = useContractContext();
+  console.log(ethereumPrice)
 
   const [transactionFee, setTransactionFee] = useState<number | null>(null);
 
   const handlePurchase = async () => {
     await placeOrder(
       item.pid,
-      item.price
+      ethereumPrice
     );
   };
 

@@ -26,7 +26,7 @@ interface ContractContextTypes {
     _maxQuantity: number,
     _refundTimeLimit: number
   ) => Promise<void>;
-  placeOrder: (id: number, _price: number) => Promise<void>;
+  placeOrder: (id: number, _price: string) => Promise<void>;
   createAStore: (
     _storeName: string,
     _category: string,
@@ -228,17 +228,29 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     getLiveEVnt();
   }, [account]);
 
-  const placeOrder = async (id: number, _price: number) => {
+  async function placeOrder(id: number, _price: string) {
     try {
-      const result = await connectWithContract();
-      const tx = await result.placeOrder(id, {
-        value: ethers.utils.parseEther(_price.toString()),
+      const contract = await connectWithContract();
+  
+      // Convert price to Ether value
+      const priceInEther = ethers.utils.parseEther(_price);
+  
+      // Specify a gas limit for the transaction (e.g., 200000)
+      const gasLimit = 500000;
+  
+      // Call the placeOrder function from the smart contract
+      const tx = await contract.placeOrder(id, priceInEther, {
+        value: priceInEther,
+        gasLimit: gasLimit,
       });
+  
+      // Wait for the transaction to be confirmed
       await tx.wait();
     } catch (error) {
       console.log(error);
     }
-  };
+  }
+  
 
   const startStream = async (callId: string) => {
     try {
