@@ -12,35 +12,8 @@ import ConnectModal from "./ConnectModal";
 
 const Navbar = () => {
   const { address, setAddress } = useTradeContext();
-
-  const createCapability = async () => {
-    if (typeof window != "undefined") {
-      const runtimeConnector = new RuntimeConnector(Extension);
-      const pkh = await runtimeConnector?.createCapability({
-        app: "PolyverseTest",
-        wallet: WALLET.METAMASK, // optional, if not connected
-      });
-      console.log(pkh);
-      return pkh;
-    }
-  };
-
-  const connect = async () => {
-    try {
-      if (typeof window != "undefined") {
-        const runtimeConnector = new RuntimeConnector(Extension);
-        const wallet = await runtimeConnector?.connectWallet(WALLET.METAMASK);
-        await runtimeConnector?.switchNetwork(44787);
-        createCapability();
-        console.log(wallet.address);
-        setAddress(wallet?.address);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
   return (
-    <nav className="border-b-4 border-[#fff] bg-Bar flex w-full items-center justify-between py-3.5 px-5">
+    <nav className="border-b-4 border-[#fff] bg-Bar flex w-full items-center justify-between py-2.5 px-5">
       <div className="flex items-center space-x-4">
         <Image
           src={logo}

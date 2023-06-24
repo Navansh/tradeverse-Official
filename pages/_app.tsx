@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
         },
        // wallets: evmWallets({ qrcode: false }),
       }}
-      theme={"auto"}
+      theme={"light"}
       language={"en"} //optional：localize, default en
       walletSort={["Particle Auth", "Wallet"]} //optional：walelt order
       particleAuthSort={[

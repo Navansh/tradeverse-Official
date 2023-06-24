@@ -38,6 +38,7 @@ interface ContractContextTypes {
   currentUserStore: never[];
   userProduct: never[];
   allProduct: never[];
+  startStream: (callId: string) => Promise<void>
 }
 
 const ContractContext = createContext<ContractContextTypes | null>(null);
@@ -171,6 +172,16 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     }
   };
 
+  const startStream = async (callId: string) => {
+    try {
+      const result = await connectWithContract();
+      const tx = await result.startStream(callId);
+      await tx.wait();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addProduct = async (
     _name: string,
     _category: string,
@@ -206,6 +217,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     currentUserStore,
     userProduct,
     allProduct,
+    startStream
   };
   return (
     <ContractContext.Provider value={value}>
