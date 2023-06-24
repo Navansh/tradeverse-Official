@@ -139,7 +139,7 @@ const DetailCard = ({ item }: Props) => {
         </div>
 
         <div className="absolute top-0 right-0  ">
-          {item.active === false && (
+          {item.active === true && (
             <Link href={`/meet/${item.id}`} className="bg-[#F90000] p-[14px] flex items-center justify-end space-x-2">
               <span>Seller is Live</span>
               <FaArrowRight size={16} />

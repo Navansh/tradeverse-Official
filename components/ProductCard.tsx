@@ -83,7 +83,7 @@ const ProductCard = ({
           />
         )}
         <div className="absolute top-0 right-0  ">
-          {active === false && (
+          {active === true && (
             <Link href={`/meet/${id}`} className="bg-[#F90000] p-[14px] flex items-center justify-end space-x-2">
               <span>Seller is Live</span>
               <FaArrowRight size={16} />

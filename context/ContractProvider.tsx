@@ -172,7 +172,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
         owner: item.owner,
         refund: item.refundTimeLimit,
         active: item.sellerActive,
-        meetingLink: item.meetingId
+        id: item.meetingId
       }));
       console.log(parsedProduct);
       setAllProduct(parsedProduct);

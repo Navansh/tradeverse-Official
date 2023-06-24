@@ -260,9 +260,9 @@ const sellingPoint: SellingPointType[] = [
 ];
 
 const particle = new ParticleNetwork({
-  projectId: "f8dc7e0f-ea6a-469c-8a41-c572ba65e0d2",
-  clientKey: "c4mrm5RvfG8T7zsqOqZJtU78rd5M821fe2vMVhy2",
-  appId: "24b042dd-86d6-4507-a55c-fdd7981f0ae5",
+  projectId: "a581fe1b-809a-40f9-a9e5-6ac8683695fc",
+  clientKey: "ccyYA3EfVgH6LjvwxCbdi4E3qdkzjRmZR3t4c0Ot",
+  appId: "9fcfcc9f-a1c7-41eb-afaa-939befdd3b33",
   chainName: "Celo", //optional: current chain name, default Ethereum.
   chainId: 44787, //optional: current chain id, default 1.
   wallet: {

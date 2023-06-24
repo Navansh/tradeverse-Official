@@ -60,6 +60,9 @@ const VideoCall = () => {
     });
   });
 
+  
+useEventListner("room:joined", (data) => console.log({ data }));
+
   //   useEventListener("lobby:joined", () => {
   //     console.log("lobby:joined");
   //     fetchVideoStream();

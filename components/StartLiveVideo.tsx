@@ -15,7 +15,7 @@ const StartLiveVideo = () => {
   const { getRoomId } = useTradeContext();
   const [roomId, setRoomId] = useState("");
   const { initialize, isInitialized } = useHuddle01();
-  const { startStream } = useContractContext();
+  
   const [isLoading, setIsLoading] = useState(false);
   const { joinLobby } = useLobby();
   const router = useRouter();
@@ -31,7 +31,6 @@ const StartLiveVideo = () => {
     try {
       const id = await getRoomId();
       setIsLoading(true);
-      await startStream(id);
       setRoomId(id);
       if (roomId) {
         setIsLoading(false);
