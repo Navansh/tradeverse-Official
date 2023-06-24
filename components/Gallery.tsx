@@ -16,6 +16,7 @@ interface Product {
   owner: string
   refund: number,
   active: boolean
+  id: string
 }
 
 const Gallery = () => {

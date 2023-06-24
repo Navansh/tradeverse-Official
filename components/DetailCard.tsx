@@ -7,13 +7,14 @@ import {
   BsChevronRight,
   BsDot,
 } from "react-icons/bs";
-import { FaChevronRight } from "react-icons/fa";
+import { FaArrowRight, FaChevronRight } from "react-icons/fa";
 import Button from "./Button";
 import Image from "next/image";
 import { useContractContext } from "@/context/ContractProvider";
 import { ethers } from "ethers";
 import { convertToEthereum } from "@/constant/convertionUtils";
 import { formatCurrency, getGasPrice } from "@/constant/cryptoApi";
+import Link from "next/link";
 
 interface Product {
   name: string;
@@ -27,6 +28,8 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
+  active: boolean
+  id: string
 }
 interface Props {
   item: Product;
@@ -132,6 +135,15 @@ const DetailCard = ({ item }: Props) => {
             <BsDot className="text-green text-xl" />
             <span className="text-[14px] font-medium">{item?.location}</span>
           </div>
+        </div>
+
+        <div className="absolute top-0 right-0  ">
+          {item.active === false && (
+            <Link href={`/meet/${item.id}`} className="bg-[#F90000] p-[14px] flex items-center justify-end space-x-2">
+              <span>Seller is Live</span>
+              <FaArrowRight size={16} />
+            </Link>
+          )}
         </div>
 
         <div className="flex flex-col items-start border-b-2 border-Foundation py-6 w-full">

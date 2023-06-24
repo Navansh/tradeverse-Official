@@ -21,6 +21,7 @@ interface Product {
   owner: string;
   refund: number;
   active: boolean;
+  id: string
 }
 // interface Type {
 //   item: Props;
@@ -39,6 +40,7 @@ const ProductCard = ({
   quantity,
   refund,
   active,
+  id
 }: Product) => {
   const { handleAddToCart } = useTradeContext();
   //console.log(image[0])
@@ -69,8 +71,8 @@ const ProductCard = ({
     getEthereumPrice();
   }, [price]);
   return (
-    <div className="border-2 cursor-pointer border-Gray/900 mt-9 px-3 py-2.5 w-[310px] flex-shrink-0 h-[491px]">
-      <div className="relative">
+    <div className="border-2 relative cursor-pointer border-Gray/900 mt-9 px-3 py-2.5 w-[310px] flex-shrink-0 h-[491px]">
+      <div className="">
         {image?.length > 0 && (
           <Image
             src={`https://gateway.pinata.cloud/ipfs/${image[0]}`}
@@ -82,7 +84,7 @@ const ProductCard = ({
         )}
         <div className="absolute top-0 right-0  ">
           {active === false && (
-            <Link href={``} className="bg-[#F90000] gap-[4px] flex items-center justify-end">
+            <Link href={`/meet/${id}`} className="bg-[#F90000] p-[14px] flex items-center justify-end space-x-2">
               <span>Seller is Live</span>
               <FaArrowRight size={16} />
             </Link>

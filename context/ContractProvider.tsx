@@ -158,7 +158,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     try {
       const result = await connectWithContract();
       const tx = await result.getProductDetails();
-      //console.log(tx);
+      console.log(tx);
       const parsedProduct = await tx.map((item: any) => ({
         name: item.name,
         desc: item.descLink,
@@ -171,7 +171,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
         max: Number(item.maxQuantity),
         owner: item.owner,
         refund: item.refundTimeLimit,
-        active: item.sellerActive
+        active: item.sellerActive,
+        meetingLink: item.meetingId
       }));
       console.log(parsedProduct);
       setAllProduct(parsedProduct);

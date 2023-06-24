@@ -16,6 +16,8 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
+  active: boolean;
+  id: string
 }
 
 const Details = () => {
@@ -23,12 +25,12 @@ const Details = () => {
   const { id } = router.query;
   const { allProduct, productByAddress } = useContractContext();
   const [product, setProduct] = useState<Product | undefined>(undefined);
-  console.log(product)
+  console.log(product);
 
   useEffect(() => {
     const getProduct = () => {
       const selectedProduct = allProduct.find((item: any) => item.name === id);
-      console.log(selectedProduct)
+      console.log(selectedProduct);
       setProduct(selectedProduct);
     };
 
