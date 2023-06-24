@@ -161,6 +161,9 @@ const ProductForm = () => {
                 isInput
                 handleChange={handlePriceChange}
               />
+              <span className="text-[14px] leading-[24px] text-center text-green">
+                Enter price in dollar not decimals
+              </span>
               <FormField
                 title="What do you want to sell *"
                 type="select"
