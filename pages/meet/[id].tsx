@@ -71,10 +71,7 @@ const VideoCall = () => {
     });
   });
 
-  const { startStream } = useContractContext();
-
   useEventListner("room:joined", (data) => {
-    startStream(roomId);
     console.log(roomId)
   });
 
