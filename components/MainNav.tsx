@@ -10,7 +10,6 @@ import Image from "next/image";
 import ConnectModal from "./ConnectModal";
 
 const MainNav = () => {
-  const { address, setAddress } = useTradeContext();
 
   
 

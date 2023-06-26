@@ -1,17 +1,18 @@
 import { TradeVerseProvider } from "@/context";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { useHuddle01 } from "@huddle01/react";
-import { useEffect } from "react";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import { ModalProvider } from "@particle-network/connect-react-ui";
 import { WalletEntryPosition } from "@particle-network/auth";
-import { Ethereum, EthereumGoerli, Celo, CeloTestnet } from "@particle-network/common";
-import { evmWallets } from "@particle-network/connect";
-import { ToastContainer, toast } from "react-toastify";
+import {
+  Celo,
+  CeloTestnet,
+} from "@particle-network/common";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ContractProvider } from "@/context/ContractProvider";
+import { StoreProvider } from "@/context/StoreContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -35,7 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
           //prompt set master password. 0: None(default), 1: Once, 2: Always
           promptMasterPasswordSettingWhenLogin: 1,
         },
-       // wallets: evmWallets({ qrcode: false }),
+        // wallets: evmWallets({ qrcode: false }),
       }}
       theme={"light"}
       language={"en"} //optional：localize, default en
@@ -52,7 +53,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Provider store={store}>
         <ContractProvider>
           <TradeVerseProvider>
-            <Component {...pageProps} />
+            <StoreProvider>
+              <Component {...pageProps} />
+            </StoreProvider>
             <ToastContainer />
           </TradeVerseProvider>
         </ContractProvider>

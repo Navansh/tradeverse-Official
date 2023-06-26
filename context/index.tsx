@@ -1,9 +1,4 @@
 import { useContext, createContext, useState, useEffect } from "react";
-import {
-  RuntimeConnector,
-  Extension,
-  WALLET,
-} from "@dataverse/runtime-connector";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,8 +18,6 @@ interface TradeVerseNode {
 }
 
 interface TradeVerseContextType {
-  address: String | undefined;
-  setAddress: React.Dispatch<React.SetStateAction<String | undefined>>;
   handleAddToCart: (item: any) => void;
   handleUpdateQuantity: (itemId: number, quantity: number) => void;
   getRoomId: () => Promise<any>;
@@ -33,7 +26,6 @@ interface TradeVerseContextType {
 const TradeVerse = createContext<TradeVerseContextType | null>(null);
 
 export const TradeVerseProvider: React.FC<TradeVerseNode> = ({ children }) => {
-  const [address, setAddress] = useState<String | undefined>("");
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
   console.log(cartItems);
@@ -52,17 +44,6 @@ export const TradeVerseProvider: React.FC<TradeVerseNode> = ({ children }) => {
     }
     console.log(item);
   };
-
-  useEffect(() => {
-    const getAddress = async () => {
-      if (typeof window != "undefined") {
-        const runtimeConnector = new RuntimeConnector(Extension);
-        const pkh = await runtimeConnector?.wallet?.getCurrentPkh();
-        console.log(pkh);
-      }
-    };
-    getAddress()
-  }, [address]);
 
   const handleClearCart = () => {
     dispatch(clearCart());
@@ -110,8 +91,6 @@ export const TradeVerseProvider: React.FC<TradeVerseNode> = ({ children }) => {
   });
 
   const contextValue: TradeVerseContextType = {
-    address,
-    setAddress,
     handleAddToCart,
     handleUpdateQuantity,
     getRoomId,

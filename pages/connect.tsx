@@ -26,68 +26,8 @@ import "@particle-network/connect-react-ui/dist/index.css";
 import ConnectModal from "@/components/ConnectModal";
 
 const Connect = () => {
-  const { address, setAddress } = useTradeContext();
-  console.log(address);
   const router = useRouter();
-
-  // const createCapability = async () => {
-  //   if (typeof window != "undefined") {
-  //     const runtimeConnector = new RuntimeConnector(Extension);
-  //     const pkh = await runtimeConnector?.createCapability({
-  //       app: "PolyverseTest",
-  //       wallet: WALLET.METAMASK, // optional, if not connected
-  //     });
-  //     console.log(pkh);
-  //     return pkh;
-  //   }
-  // };
-
-  // const connect = async () => {
-  //   try {
-  //     if (typeof window != "undefined") {
-  //       const runtimeConnector = new RuntimeConnector(Extension);
-  //       const wallet = await runtimeConnector?.connectWallet(WALLET.METAMASK);
-  //       await runtimeConnector?.switchNetwork(44787);
-  //       createCapability();
-  //       console.log(wallet.address);
-  //       setAddress(wallet?.address);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  const [provider, setProvider] = useState<any>();
-
-  const connectKit = useMemo(() => {
-    return new ParticleConnect({
-      projectId: "a581fe1b-809a-40f9-a9e5-6ac8683695fc",
-      clientKey: "ccyYA3EfVgH6LjvwxCbdi4E3qdkzjRmZR3t4c0Ot",
-      appId: "c859c0a7-fedf-48d1-844f-5813a3c228ca",
-      chains: [Ethereum, EthereumGoerli, BSCTestnet],
-      wallets: [metaMask(), web3Modal()],
-    });
-  }, []);
-
   const account = useAccount();
-  console.log(account);
-
-  // useEffect(() => {
-  //   if (provider) {
-  //     window.location.reload()
-  //     router.push("welcome");
-  //   }
-  // }, [provider, router])
-
-  const connectWallet = async (id: string, options?: any) => {
-    try {
-      const connectProvider = await connectKit?.connect(id, options);
-      connectKit?.switchChain(PolygonMumbai);
-      setProvider(connectProvider);
-    } catch (error) {
-      console.error("connectWallet", error);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">

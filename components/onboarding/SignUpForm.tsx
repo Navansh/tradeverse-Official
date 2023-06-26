@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { auth, signUp } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useContractContext } from "@/context/ContractProvider";
+import { useStoreContext } from "@/context/StoreContext";
+import Loader from "../Loader";
 
 interface Props {
   setActive: React.Dispatch<React.SetStateAction<string>>;
@@ -28,7 +30,6 @@ const SignUpForm = ({ setActive }: Props) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [location, setLocation] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const nextStep = () => {
@@ -76,16 +77,14 @@ const SignUpForm = ({ setActive }: Props) => {
     }
   };
 
-  const { createAStore } = useContractContext();
+  const { createStore, isLoading } = useStoreContext();
 
   const handleClick = async (e?: any) => {
     e.preventDefault();
     if (currentStep === 0) {
       if (!name || !lastName || !selectedCategory || !storeName || !description)
         return toast.error("Fill every required part");
-      // Perform validation or data handling for the Account step
-      setIsLoading(true);
-      const tx = createAStore(
+      createStore(
         storeName,
         selectedCategory,
         name,
@@ -93,10 +92,7 @@ const SignUpForm = ({ setActive }: Props) => {
         description,
         location
       );
-      setIsLoading(false);
-      if (!isLoading) {
-        nextStep();
-      }
+      nextStep();
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
       if (!email || !password)
@@ -119,6 +115,7 @@ const SignUpForm = ({ setActive }: Props) => {
 
   return (
     <form id="signup">
+      {isLoading && <Loader />}
       <div className={styles.wrapper}>
         {renderStepComponent()}
         <Button handleClick={handleClick} isFunc title="Continue" />

@@ -1,15 +1,9 @@
 import { createContext, useEffect, useState, useContext } from "react";
-import productJson from "./Products.json";
-import {
-  Extension,
-  Mode,
-  RuntimeConnector,
-  WALLET,
-} from "@dataverse/runtime-connector";
 import { ethers } from "ethers";
-import connectWithContract from "@/constant";
-import { useAccount, useAccountInfo } from "@particle-network/connect-react-ui";
+import { useAccount } from "@particle-network/connect-react-ui";
 import { toast } from "react-toastify";
+import connectWithContract from "@/constant/contract";
+import Product from "./TradeVerse_Product.json";
 
 interface ContractChildren {
   children: React.ReactNode;
@@ -27,22 +21,11 @@ interface ContractContextTypes {
     _refundTimeLimit: number
   ) => Promise<void>;
   placeOrder: (id: number, _price: string) => Promise<void>;
-  createAStore: (
-    _storeName: string,
-    _category: string,
-    _name: string,
-    _lastName: string,
-    _description: string,
-    _location: string
-  ) => Promise<void>;
   storeDetail: never[];
   currentUserStore: never[];
   userProduct: never[];
   allProduct: never[];
-  cancelLiveEvent: (id: number) => Promise<any>;
-  startStream: (callId: string) => Promise<void>;
   productByAddress: (id: string) => Promise<any>;
-  isSellerActive: (id: string) => Promise<any>;
   isLoading: boolean;
   setSellerIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   sellerIsActive: boolean;
@@ -61,6 +44,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   const [sellerIsActive, setSellerIsActive] = useState(false);
   //console.log(currentUserStore);
 
+  const ProductAddress = "0xa0b241aCbe2bc1E61F8077DbeEC456cA5E9717Cc";
+
   const createAStore = async (
     _storeName: string,
     _category: string,
@@ -70,7 +55,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     _location: string
   ) => {
     try {
-      const contract = await connectWithContract();
+      const contract = await connectWithContract(ProductAddress, Product.abi);
       setIsLoading(true);
       const tx = await contract.createAStore(
         _storeName,
@@ -90,24 +75,9 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     }
   };
 
-  const getStoreDetails = async () => {
-    try {
-      const result = await connectWithContract();
-      setIsLoading(true);
-      const tx = await result.getStoreDetails();
-      // console.log(tx);
-      setStoreDetails(tx);
-      setIsLoading(false);
-      return tx; // Return the fetched store details
-    } catch (error) {
-      console.error(error);
-      return []; // Return an empty array in case of error
-    }
-  };
-
   const productByAddress = async (id: string) => {
     try {
-      const result = await connectWithContract();
+      const result = await connectWithContract(ProductAddress, Product.abi);
       const tx = await result.getProductByAddress(id);
       console.log(tx);
       return tx;
@@ -117,46 +87,9 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     }
   };
 
-  const cancelLiveEvent = async (id: number) => {
-    try {
-      const result = await connectWithContract();
-      const tx = await result.cancelLive(id);
-      // console.log(tx);
-      return tx;
-    } catch (error) {
-      console.error(error);
-      return []; // Return an empty array in case of error
-    }
-  };
-
-  const isSellerActive = async (id: string) => {
-    try {
-      const result = await connectWithContract();
-      const tx = await result.isSellerActive(id);
-      console.log(tx);
-      return tx;
-    } catch (error) {
-      console.error(error);
-      return []; // Return an empty array in case of error
-    }
-  };
-
-  const getLiveEVnt = async () => {
-    try {
-      const result = await connectWithContract();
-      const tx = await result.getLiveDetail();
-      console.log(tx);
-      setLiveEvent(tx);
-      return tx;
-    } catch (error) {
-      console.error(error);
-      return []; // Return an empty array in case of error
-    }
-  };
-
   const getProductDetails = async () => {
     try {
-      const result = await connectWithContract();
+      const result = await connectWithContract(ProductAddress, Product.abi);;
       const tx = await result.getProductDetails();
       console.log(tx);
       const parsedProduct = await tx.map((item: any) => ({
@@ -172,7 +105,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
         owner: item.owner,
         refund: item.refundTimeLimit,
         active: item.sellerActive,
-        id: item.meetingId
+        id: item.meetingId,
       }));
       console.log(parsedProduct);
       setAllProduct(parsedProduct);
@@ -204,66 +137,33 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     console.log(userProduct);
   };
 
-  const filterForUserStore = async () => {
-    const result = await getStoreDetails();
-    const userStore = result.filter((item: any) => item.owner === account);
-    // console.log(userStore)
-    const parsedStore = await userStore.map((item: any) => ({
-      name: item.name,
-      desc: item.description,
-      customer: item.customer,
-      isActive: item.isSellerActive,
-      storeName: item.storeName,
-    }));
-    console.log(parsedStore);
-    setcurrentUserStore(parsedStore);
-    console.log(userStore);
-  };
-
   useEffect(() => {
-    getStoreDetails();
-    filterForUserStore();
     getProductDetails();
     filterForUserProduct();
-    getLiveEVnt();
   }, [account]);
 
   async function placeOrder(id: number, _price: string) {
     try {
-      const contract = await connectWithContract();
-  
+      const contract = await connectWithContract(ProductAddress, Product.abi);
+
       // Convert price to Ether value
       const priceInEther = ethers.utils.parseEther(_price);
-  
+
       // Specify a gas limit for the transaction (e.g., 200000)
       const gasLimit = 500000;
-  
+
       // Call the placeOrder function from the smart contract
       const tx = await contract.placeOrder(id, priceInEther, {
         value: priceInEther,
         gasLimit: gasLimit,
       });
-  
+
       // Wait for the transaction to be confirmed
       await tx.wait();
     } catch (error) {
       console.log(error);
     }
   }
-  
-
-  const startStream = async (callId: string) => {
-    try {
-      const result = await connectWithContract();
-      setIsLoading(true);
-      const tx = await result.startStream(callId);
-      await tx.wait();
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
-  };
 
   const addProduct = async (
     _name: string,
@@ -276,7 +176,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     _refundTimeLimit: number
   ) => {
     try {
-      const result = await connectWithContract();
+      const result = await connectWithContract(ProductAddress, Product.abi);;
       setIsLoading(true);
       const tx = await result.addProduct(
         _name,
@@ -303,10 +203,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     currentUserStore,
     userProduct,
     allProduct,
-    startStream,
-    cancelLiveEvent,
     productByAddress,
-    isSellerActive,
     isLoading,
     sellerIsActive,
     setSellerIsActive,

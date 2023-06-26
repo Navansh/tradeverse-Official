@@ -11,7 +11,6 @@ import { FaSearch, FaChevronDown, FaBars } from "react-icons/fa";
 import ConnectModal from "./ConnectModal";
 
 const Navbar = () => {
-  const { address, setAddress } = useTradeContext();
   return (
     <nav className="border-b-4 border-[#fff] bg-Bar flex w-full items-center justify-between py-2.5 px-5">
       <div className="flex items-center space-x-4">
