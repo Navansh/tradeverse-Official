@@ -44,7 +44,7 @@ const DetailCard = ({ item }: Props) => {
     activeRoute: "",
   });
   const [isActive ,setIsActive] = useState(false)
-  const { placeOrder, isSellerActive } = useContractContext();
+  const { placeOrder } = useContractContext();
   console.log(ethereumPrice)
 
   const [transactionFee, setTransactionFee] = useState<number | null>(null);
@@ -87,12 +87,7 @@ const DetailCard = ({ item }: Props) => {
         console.error("Error:", error);
       });
   }, []);
-
-
-  useEffect(() => {
-  const tx = isSellerActive(item.owner)
-  console.log(tx)
-  }, [item.owner])
+  
 
   const formattedTransactionFee = formatCurrency(transactionFee, "USD");
 
