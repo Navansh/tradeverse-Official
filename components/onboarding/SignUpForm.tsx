@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useContractContext } from "@/context/ContractProvider";
 import { useStoreContext } from "@/context/StoreContext";
 import Loader from "../Loader";
+import { useAccount, useAccountInfo } from "@particle-network/connect-react-ui";
 
 interface Props {
   setActive: React.Dispatch<React.SetStateAction<string>>;
@@ -16,7 +17,7 @@ interface Props {
 
 // Styles
 const styles = {
-  wrapper: "mt-[9%] flex flex-col space-y-5",
+  wrapper: "flex flex-col space-y-6",
 };
 
 const SignUpForm = ({ setActive }: Props) => {
@@ -84,41 +85,53 @@ const SignUpForm = ({ setActive }: Props) => {
     if (currentStep === 0) {
       if (!name || !lastName || !selectedCategory || !storeName || !description)
         return toast.error("Fill every required part");
-      createStore(
-        storeName,
-        selectedCategory,
-        name,
-        lastName,
-        description,
-        location
-      );
-      nextStep();
+  
+      try {
+        await createStore(
+          storeName,
+          selectedCategory,
+          name,
+          lastName,
+          description,
+          location
+        );
+        nextStep();
+      } catch (error) {
+        // Handle the error here, e.g., show an error toast
+        toast.error("Failed to create store");
+      }
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
       if (!email || !password)
         return toast.error("Enter email and password", {
           position: "bottom-right",
         });
-      if (password != confirmPassword)
-        return toast.error("Password doesnt match", {
+      if (password !== confirmPassword)
+        return toast.error("Password doesn't match", {
           position: "bottom-right",
         });
+  
       signUp(email, password);
+  
       onAuthStateChanged(auth, (user) => {
         if (user) {
           const uid = user.uid;
           router.push("/profile");
         }
       });
+  
+      router.push("/dashboard/feed");
     }
   };
+
+  const { connectId } = useAccountInfo();
 
   return (
     <form id="signup">
       {isLoading && <Loader />}
       <div className={styles.wrapper}>
         {renderStepComponent()}
-        <Button handleClick={handleClick} isFunc title="Continue" />
+        <Button handleClick={handleClick} isFunc title="Set up Store" />
         <span className="text-[14px] leading-[16px] cursor-pointer text-[#fff] text-center">
           Already have an account?{" "}
           <span onClick={() => setActive("login")} className="text-green">

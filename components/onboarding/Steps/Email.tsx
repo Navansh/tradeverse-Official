@@ -1,4 +1,7 @@
+import { logo } from "@/assets";
 import FormField from "@/components/FormField";
+import Sidebar from "@/components/Sidebar";
+import Image from "next/image";
 import React from "react";
 
 interface Props {
@@ -20,7 +23,7 @@ const Email = ({
 }: Props) => {
   return (
     <>
-      <FormField
+        <FormField
         title="Enter your Email address *"
         type="text"
         isInput

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useTradeContext } from "@/context";
 import axios from "axios";
 import { convertToEthereum } from "@/constant/convertionUtils";
+import { useStoreContext } from "@/context/StoreContext";
 
 interface Product {
   name: string;
@@ -21,7 +22,7 @@ interface Product {
   owner: string;
   refund: number;
   active: boolean;
-  id: string
+  id: string;
 }
 // interface Type {
 //   item: Props;
@@ -40,9 +41,10 @@ const ProductCard = ({
   quantity,
   refund,
   active,
-  id
+  id,
 }: Product) => {
   const { handleAddToCart } = useTradeContext();
+  const { stream } = useStoreContext();
   //console.log(image[0])
   function truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) {
@@ -82,14 +84,24 @@ const ProductCard = ({
             className="max-w-[278px] max-h-[278px] object-cover p-4 bg-no-repeat rounded-[4px]"
           />
         )}
-        <div className="absolute top-0 right-0  ">
-          {active === true && (
-            <Link href={`/meet/${id}`} className="bg-[#F90000] p-[14px] flex items-center justify-end space-x-2">
-              <span>Seller is Live</span>
-              <FaArrowRight size={16} />
-            </Link>
-          )}
-        </div>
+        {stream.map((item: any, i: any) => (
+          <div key={i} className="absolute top-0 right-0  ">
+            {item.isActive && (
+              <div
+                onClick={() =>
+                  window.open(
+                    `https://iframe.huddle01.com/${item.streamId}`,
+                    "blank"
+                  )
+                }
+                className="bg-[#F90000] p-[14px] animate-pulse ease-in-out delay-500 flex items-center justify-end space-x-2"
+              >
+                <span>Seller is Live</span>
+                <FaArrowRight size={16} />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
       <div className="flex flex-col items-start px-[16px]">
         <span className="truncate text-[18px] pt-[16px]">

@@ -1,26 +1,10 @@
 "use client";
-// Update the import to the correct path
-import Button from "@/components/Button"; // Update the import to the correct path
+import Button from "@/components/Button";
 import Image from "next/image";
 import { logo } from "@/assets";
-import { useTradeContext } from "@/context";
 import { useRouter } from "next/router";
 import {
-  ParticleConnect,
-  metaMask,
-  web3Modal,
-} from "@particle-network/connect";
-import {
-  Ethereum,
-  EthereumGoerli,
-  BSCTestnet,
-  PolygonMumbai,
-} from "@particle-network/common";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  ConnectButton,
   useAccount,
-  useAccountInfo,
 } from "@particle-network/connect-react-ui";
 import "@particle-network/connect-react-ui/dist/index.css";
 import ConnectModal from "@/components/ConnectModal";

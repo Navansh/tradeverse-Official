@@ -5,10 +5,7 @@ import { Provider } from "react-redux";
 import store from "@/redux/store";
 import { ModalProvider } from "@particle-network/connect-react-ui";
 import { WalletEntryPosition } from "@particle-network/auth";
-import {
-  Celo,
-  CeloTestnet,
-} from "@particle-network/common";
+import { Celo, CeloTestnet } from "@particle-network/common";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ContractProvider } from "@/context/ContractProvider";

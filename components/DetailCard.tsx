@@ -15,6 +15,7 @@ import { ethers } from "ethers";
 import { convertToEthereum } from "@/constant/convertionUtils";
 import { formatCurrency, getGasPrice } from "@/constant/cryptoApi";
 import Link from "next/link";
+import { useStoreContext } from "@/context/StoreContext";
 
 interface Product {
   name: string;
@@ -28,8 +29,8 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
-  active: boolean
-  id: string
+  active: boolean;
+  id: string;
 }
 interface Props {
   item: Product;
@@ -37,25 +38,22 @@ interface Props {
 
 const DetailCard = ({ item }: Props) => {
   const [totalAmount, setTotalAmount] = useState(0);
+  const { stream } = useStoreContext();
   const { handleAddToCart, handleUpdateQuantity } = useTradeContext();
   const [ethereumPrice, setEthereumPrice] = useState<string>("");
   const [active, setActive] = useState({
     isActive: false,
     activeRoute: "",
   });
-  const [isActive ,setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState(false);
   const { placeOrder } = useContractContext();
-  console.log(ethereumPrice)
+  console.log(ethereumPrice);
 
   const [transactionFee, setTransactionFee] = useState<number | null>(null);
 
   const handlePurchase = async () => {
-    await placeOrder(
-      item.pid,
-      ethereumPrice
-    );
+    await placeOrder(item.pid, ethereumPrice);
   };
-
 
   useEffect(() => {
     async function getEthereumPrice() {
@@ -87,21 +85,22 @@ const DetailCard = ({ item }: Props) => {
         console.error("Error:", error);
       });
   }, []);
-  
 
   const formattedTransactionFee = formatCurrency(transactionFee, "USD");
 
-  const transFee = formattedTransactionFee !== null ? formattedTransactionFee.toFixed(0) : "N/A"
-  console.log(transFee)
+  const transFee =
+    formattedTransactionFee !== null
+      ? formattedTransactionFee.toFixed(0)
+      : "N/A";
+  console.log(transFee);
 
   const calculateTotalAmount = () => {
-  
     const fee = transactionFee !== null ? transactionFee : 0; // Set fee to 0 if transactionFee is null
-  
+
     const total = fee + item.price + 3;
     return total;
-  }
-  
+  };
+
   useEffect(() => {
     const total = calculateTotalAmount();
     setTotalAmount(total);
@@ -133,13 +132,25 @@ const DetailCard = ({ item }: Props) => {
           </div>
         </div>
 
-        <div className="absolute top-0 right-0  ">
-          {item.active === true && (
-            <Link href={`/meet/${item.id}`} className="bg-[#F90000] p-[14px] flex items-center justify-end space-x-2">
-              <span>Seller is Live</span>
-              <FaArrowRight size={16} />
-            </Link>
-          )}
+        <div className="absolute top-0 right-0 w-full ">
+          {stream.map((item: any, i: any) => (
+            <div key={i} className="absolute top-0 right-0  ">
+              {item.isActive && (
+                <div
+                  onClick={() =>
+                    window.open(
+                      `https://iframe.huddle01.com/${item.streamId}`,
+                      "blank"
+                    )
+                  }
+                  className="bg-[#F90000] p-[14px] animate-pulse ease-in-out delay-500 flex items-center justify-end space-x-2"
+                >
+                  <span>Seller is Live</span>
+                  <FaArrowRight size={16} />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-col items-start border-b-2 border-Foundation py-6 w-full">

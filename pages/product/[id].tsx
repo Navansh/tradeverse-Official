@@ -1,4 +1,5 @@
 import { Navbar, ProductCard, ProductDetails, Sidebar } from "@/components";
+import Loader from "@/components/Loader";
 import { products } from "@/constant";
 import { useContractContext } from "@/context/ContractProvider";
 import { useRouter } from "next/router";
@@ -47,7 +48,7 @@ const Details = () => {
         {product ? (
           <ProductDetails item={product} />
         ) : (
-          <div>Loading...</div> // Render a loading state or handle the case when product is undefined
+          <Loader /> // Render a loading state or handle the case when product is undefined
         )}
       </div>
     </>

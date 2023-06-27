@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/escrow/RefundEscrow.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract TradeVerse_Product is ReentrancyGuard {
+contract Products is ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _productID;
     Counters.Counter private _orderID;

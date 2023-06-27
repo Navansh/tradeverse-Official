@@ -7,6 +7,7 @@ import { products } from "@/constant";
 import ProductCard from "./ProductCard";
 import { useRouter } from "next/router";
 import { useContractContext } from "@/context/ContractProvider";
+import { useStoreContext } from "@/context/StoreContext";
 
 interface Product {
   name: string;
@@ -54,7 +55,7 @@ const ProductDetails = ({ item }: Props) => {
           <FaArrowLeft size={15} />
         </div>
         <div className="flex flex-col items-start">
-          <div className="flex flex-wrap gap-12 my-16 pb-12">
+          <div className="grid grid-cols-2 items-center gap-12 my-16 pb-12">
             <div className="max-w-[643px]">
               <Carousel indicators={item?.image}>
                 {item?.image?.map((s: string[], i: number) => (

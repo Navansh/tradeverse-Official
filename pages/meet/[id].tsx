@@ -15,11 +15,13 @@ import { HuddleIframe, useEventListner } from "@huddle01/iframe";
 import { iframeApi } from "@huddle01/iframe";
 import { Navbar } from "@/components";
 import { useContractContext } from "@/context/ContractProvider";
+import { useStoreContext } from "@/context/StoreContext";
 
 const VideoCall = () => {
   const router = useRouter();
   const { id } = router.query;
   const [roomId, setRoomId] = useState("");
+  const { startAStream } = useStoreContext()
 
   // const { peerIds } = usePeers();
   // const { joinLobby } = useLobby();
@@ -50,7 +52,7 @@ const VideoCall = () => {
   useEffect(() => {
     // its preferable to use env vars to store projectId
     initialize("L-UtmOW84pscUfMWmRGCk2-dwngKPaoK");
-    console.log(id);
+    //console.log(id);
     updateString(id);
   }, []);
 
@@ -72,7 +74,7 @@ const VideoCall = () => {
   });
 
   useEventListner("room:joined", (data) => {
-    console.log(roomId)
+    console.log(data)
   });
 
   //   useEventListener("lobby:joined", () => {

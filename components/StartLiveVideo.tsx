@@ -10,14 +10,15 @@ import { useLobby } from "@huddle01/react/hooks";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useContractContext } from "@/context/ContractProvider";
+import { useStoreContext } from "@/context/StoreContext";
 
 const StartLiveVideo = () => {
   const { getRoomId } = useTradeContext();
   const [roomId, setRoomId] = useState("");
   const { initialize, isInitialized } = useHuddle01();
-  
+
   const [isLoading, setIsLoading] = useState(false);
-  const { joinLobby } = useLobby();
+  const { startAStream } = useStoreContext();
   const router = useRouter();
   console.log(roomId);
 
@@ -34,6 +35,7 @@ const StartLiveVideo = () => {
       setRoomId(id);
       if (roomId) {
         setIsLoading(false);
+        startAStream(roomId);
         router.push(`/meet/${roomId}`);
       }
     } catch (error) {

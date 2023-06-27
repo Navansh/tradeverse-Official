@@ -8,6 +8,7 @@ import CategoryCard from "./CategoryCard";
 import { products } from "@/constant";
 import { useContractContext } from "@/context/ContractProvider";
 import { Love_Light } from "next/font/google";
+import { useStoreContext } from "@/context/StoreContext";
 
 interface Product {
   name: string;
@@ -21,23 +22,39 @@ interface Product {
   max: number;
   owner: string;
   refund: number;
-  active: boolean
-  id: string
+  active: boolean;
+  id: string;
 }
 
 const Mainbody = () => {
   const { allProduct } = useContractContext();
+  const { allStream } = useStoreContext();
   console.log(allProduct);
   return (
     <div className="flex-1 h-screen pb-[30px] mx-9 flex flex-col items-start mt-9">
-      <div className="flex border-b-2 border-Foundation w-full py-6 items-center">
-        <button className="border border-green px-5 py-2.5 rounded-[48px] flex items-center space-x-3">
-          <Image src={profile} alt="profile" />
-          <span className="text-[14px] font-bold text-[#fff]">
-            Anima <span className="font-normal">is hosting a live Video</span>
-          </span>
-          <FaMicrophoneAlt size={25} className="text-Foundation" />
-        </button>
+      <div className="flex overflow-hidden border-b-2 border-Foundation w-full py-12 items-center">
+        {allStream.map((item: any, i: any) => (
+          <div key={i}>
+            {item.isActive && (
+              <button
+                onClick={() =>
+                  window.open(
+                    `https://iframe.huddle01.com/${item.streamId}`,
+                    "blank"
+                  )
+                }
+                className="border border-green px-5 py-2.5 rounded-[48px] flex items-center space-x-3"
+              >
+                <Image src={profile} alt="profile" />
+                <span className="text-[14px] font-bold text-[#fff]">
+                  {item.storeName}{" "}
+                  <span className="font-normal">is hosting a live Video</span>
+                </span>
+                <FaMicrophoneAlt size={25} className="text-Foundation" />
+              </button>
+            )}
+          </div>
+        ))}
       </div>
 
       {allProduct.length === 0 && (
