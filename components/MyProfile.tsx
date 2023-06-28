@@ -49,7 +49,7 @@ const MyProfile = () => {
                   src={bgImage}
                   alt="bgimage"
                   className={`absolute bottom-6 left-6 w-[200px] h-[200px] object-cover rounded-full flex-shrink-0 ${
-                    item.isActive === true ? "ring-4 ring-green" : "ring-4 ring-[#1C2631]"
+                    item.isActive === true ? "ring-4 ring-red-600" : "ring-4 ring-[#1C2631]"
                   } `}
                 />
               </div>

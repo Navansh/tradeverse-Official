@@ -31,7 +31,7 @@ const cartSlice = createSlice({
     removeFromCart: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('cartItems', JSON.stringify(state.items));
+        localStorage.setItem('cartItems', JSON.stringify(state.items))
       }
     },
     updateQuantity: (state, action: PayloadAction<{ itemId: number; quantity: number }>) => {

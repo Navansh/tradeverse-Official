@@ -12,6 +12,7 @@ import { RootState } from "../redux/store";
 import { CartItem } from "../types";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
+import { toast } from "react-toastify";
 
 interface TradeVerseNode {
   children: React.ReactNode;
@@ -21,6 +22,8 @@ interface TradeVerseContextType {
   handleAddToCart: (item: any) => void;
   handleUpdateQuantity: (itemId: number, quantity: number) => void;
   getRoomId: () => Promise<any>;
+  handleRemoveFromCart: (itemId: number) => void
+  cartItems: CartItem[]
 }
 
 const TradeVerse = createContext<TradeVerseContextType | null>(null);
@@ -28,9 +31,10 @@ const TradeVerse = createContext<TradeVerseContextType | null>(null);
 export const TradeVerseProvider: React.FC<TradeVerseNode> = ({ children }) => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
-  console.log(cartItems);
+
   const handleAddToCart = (item: any) => {
     dispatch(addToCart(item));
+    toast.success("One item added to cart")
   };
 
   const handleRemoveFromCart = (itemId: number) => {
@@ -94,6 +98,8 @@ export const TradeVerseProvider: React.FC<TradeVerseNode> = ({ children }) => {
     handleAddToCart,
     handleUpdateQuantity,
     getRoomId,
+    cartItems,
+    handleRemoveFromCart
   };
 
   return (

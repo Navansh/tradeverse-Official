@@ -77,6 +77,10 @@ const VideoCall = () => {
     console.log(data)
   });
 
+  useEventListner("room:peer-left", (data) => {
+    alert("peer left")
+  });
+
   //   useEventListener("lobby:joined", () => {
   //     console.log("lobby:joined");
   //     fetchVideoStream();

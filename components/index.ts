@@ -23,3 +23,7 @@ export { default as StartLiveVideo } from "./StartLiveVideo";
 export { default as MyProfile } from "./MyProfile";
 export { default as Gallery } from "./Gallery";
 export { default as Footer } from "./Footer";
+export { default as CartSection } from "./CartSection";
+export { default as Cart } from "./cart/Cart";
+export { default as History } from "./cart/History";
+export { default as Tracking } from "./cart/Tracking";
