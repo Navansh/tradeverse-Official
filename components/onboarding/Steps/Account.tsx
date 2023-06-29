@@ -13,8 +13,8 @@ interface Props {
   setStoreName: React.Dispatch<React.SetStateAction<string>>;
   categories: string;
   setCategories: React.Dispatch<React.SetStateAction<string>>;
-  setLocation: React.Dispatch<React.SetStateAction<string>>
-  location: string
+  setLocation: React.Dispatch<React.SetStateAction<string>>;
+  location: string;
 }
 
 const Account = ({
@@ -29,42 +29,31 @@ const Account = ({
   setStoreName,
   storeName,
   location,
-  setLocation
+  setLocation,
 }: Props) => {
   return (
     <>
-      <div className="flex items-center space-x-6">
-        <FormField
-          title="Enter your first name *"
-          type="text"
-          isInput
-          value={name}
-          handleChange={(e) => setName(e.target.value)}
-        />
-        <FormField
-          title="Enter your last name *"
-          type="text"
-          isInput
-          value={lastName}
-          handleChange={(e) => setLastName(e.target.value)}
-        />
-      </div>
-      <div className="flex items-center space-x-6">
-        <FormField
-          title="Enter your Shop name *"
-          type="text"
-          isInput
-          value={storeName}
-          handleChange={(e) => setStoreName(e.target.value)}
-        />
-        <FormField
-          title="What do you want to sell *"
-          type="select"
-          isCategory
-          item={category}
-          handleChange={(e) => setCategories(e.target.value)}
-        />
-      </div>
+      <FormField
+        title="Enter your Shop name *"
+        type="text"
+        isInput
+        value={storeName}
+        handleChange={(e) => setStoreName(e.target.value)}
+      />
+      {/* <FormField
+        title="Enter your Shop name *"
+        type="text"
+        isInput
+        value={storeName}
+        handleChange={(e) => setStoreName(e.target.value)}
+      /> */}
+      <FormField
+        title="What do you want to sell *"
+        type="select"
+        isCategory
+        item={category}
+        handleChange={(e) => setCategories(e.target.value)}
+      />
       <FormField
         title="Location *"
         type="text"

@@ -2,7 +2,9 @@ import React from 'react'
 
 const Tracking = () => {
   return (
-    <div>Tracking</div>
+    <div className='m-[40px]'>
+      
+    </div>
   )
 }
 

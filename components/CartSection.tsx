@@ -10,7 +10,7 @@ const CartSection = () => {
   const [active, setActive] = useState("cart");
   return (
     <div>
-      <div className="flex m-6 items-center text-start space-x-7">
+      <div className="flex  m-6 items-center text-start space-x-7">
         <button onClick={() => router.back()} className="cursor-pointer bg-white/40 p-3 rounded-full">
           <FaArrowLeft />
         </button>

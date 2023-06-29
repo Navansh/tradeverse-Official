@@ -5,8 +5,15 @@ import Link from "next/link";
 import React from "react";
 import { FaChevronDown } from "react-icons/fa";
 import "@particle-network/connect-react-ui/dist/index.css";
+import { useStoreContext } from "@/context/StoreContext";
 
 const ConnectModal = () => {
+  const { userStore } = useStoreContext();
+
+  const profileImage = userStore?.map((item) => {
+    return item?.profile;
+  });
+
   return (
     <ConnectButton.Custom>
       {({
@@ -24,11 +31,15 @@ const ConnectModal = () => {
                 onClick={openConnectModal}
                 className="border-2 border-green px-5 py-2.5 rounded-full flex space-x-2 items-center"
               >
-                <Image
-                  src={profile}
-                  alt="profile"
-                  className="w-[24px] h-[24px] object-cover"
-                />
+                {profileImage && profileImage[0] && (
+                  <Image
+                    src={`https://gateway.pinata.cloud/ipfs/${profileImage[0]}`}
+                    alt="product"
+                    width={300}
+                    height={500}
+                    className="w-[24px] h-[24px] rounded-full object-cover"
+                  />
+                )}
                 <span className="text-green">Connect Wallet</span>
                 <FaChevronDown size={25} className="text-green" />
               </button>
@@ -37,11 +48,15 @@ const ConnectModal = () => {
             {account && (
               <button className="border-2 border-green px-5 py-2.5 rounded-full flex space-x-6 items-center">
                 <Link href="/profile">
-                  <Image
-                    src={profile}
-                    alt="profile"
-                    className="w-[24px] h-[24px] object-cover"
-                  />
+                  {profileImage && profileImage[0] && (
+                    <Image
+                      src={`https://gateway.pinata.cloud/ipfs/${profileImage[0]}`}
+                      alt="product"
+                      width={300}
+                      height={500}
+                      className="w-[24px] rounded-full h-[24px] object-cover"
+                    />
+                  )}
                 </Link>
                 <span onClick={openAccountModal} className="text-green">
                   {account?.slice(0, 9)}

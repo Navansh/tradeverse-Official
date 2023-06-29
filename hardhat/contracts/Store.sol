@@ -12,8 +12,6 @@ contract Store {
         address owner;
         string storeName;
         string category;
-        string name;
-        string lastName;
         string description;
         string location;
         string profileImg;
@@ -26,6 +24,7 @@ contract Store {
         string streamId;
         string storeName;
         address owner;
+        string storeImage;
         bool isActive;
     }
 
@@ -39,39 +38,33 @@ contract Store {
     function createAStore(
         string memory _storeName,
         string memory _category,
-        string memory _name,
-        string memory _lastName,
         string memory _description,
-        string memory _location
+        string memory _location,
+        string memory _profileImage,
+        string memory _coverImage
     ) public {
         _storeID.increment();
         StoreData storage newStore = addressToStore[msg.sender];
         newStore.storeName = _storeName;
         newStore.owner = msg.sender;
-        newStore.name = _name;
         newStore.category = _category;
-        newStore.lastName = _lastName;
         newStore.description = _description;
         newStore.location = _location;
         newStore.id = _storeID.current();
+        newStore.coverImage = _coverImage;
+        newStore.profileImg = _profileImage;
         arrayStore.push(newStore);
     }
 
-    function addProfileImage(string memory _profile) public {
-        StoreData storage store = addressToStore[msg.sender];
-        store.profileImg = _profile;
-    }
-
-    function addCoverImage(string memory _cover) public {
-        StoreData storage store = addressToStore[msg.sender];
-        store.coverImage = _cover;
-    }
-
-    function getStoreByAddress(address _owner) public view returns (StoreData memory) {
+    function getStoreByAddress(
+        address _owner
+    ) public view returns (StoreData memory) {
         return addressToStore[_owner];
     }
 
-    function retrieveStreamInfo(address _owner) public view returns (bool, string memory, string memory) {
+    function retrieveStreamInfo(
+        address _owner
+    ) public view returns (bool, string memory, string memory) {
         Stream memory stream = addressToStream[_owner];
         return (stream.isActive, stream.streamId, stream.storeName);
     }
@@ -85,21 +78,27 @@ contract Store {
     }
 
     function cancelStream() public {
-        delete addressToStream[msg.sender];
         addressToStream[msg.sender].isActive = false;
         addressToStream[msg.sender].streamId = "";
         arrayStream.push(addressToStream[msg.sender]);
+        delete addressToStream[msg.sender];
     }
 
     function startStream(string memory _callId) public {
-        require(!addressToStream[msg.sender].isActive, "You are already active");
+        require(
+            !addressToStream[msg.sender].isActive,
+            "You are already active"
+        );
         require(msg.sender != address(0), "Address cannot be zero");
         _liveID.increment();
         addressToStream[msg.sender].id = _liveID.current();
         addressToStream[msg.sender].streamId = _callId;
         addressToStream[msg.sender].isActive = true;
-        addressToStream[msg.sender].storeName = addressToStore[msg.sender].storeName;
+        addressToStream[msg.sender].storeName = addressToStore[msg.sender]
+            .storeName;
         addressToStream[msg.sender].owner = msg.sender;
+        addressToStream[msg.sender].storeImage = addressToStore[msg.sender]
+            .profileImg;
         arrayStream.push(addressToStream[msg.sender]);
         _liveID.increment();
     }

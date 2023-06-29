@@ -32,7 +32,7 @@ const CartCard = ({
     const {handleUpdateQuantity, handleRemoveFromCart } = useTradeContext()
   return (
     <div className="min-w-[551px] min-h-[171px] relative border-2 border-Gray/900 rounded-[8px] px-[16px] py-[16px]">
-        <div onClick={() => handleRemoveFromCart(1)} className="absolute cursor-pointer bg-white/40 p-3 rounded-full top-0 right-4">
+        <div onClick={() => handleRemoveFromCart(1)} className="absolute cursor-pointer bg-white/40 p-3 rounded-full top-4 right-4">
             <AiOutlineClose />
         </div>
       <div className="flex items-start justify-around space-x-[9px]">

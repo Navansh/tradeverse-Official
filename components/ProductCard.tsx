@@ -73,7 +73,7 @@ const ProductCard = ({
     getEthereumPrice();
   }, [price]);
   return (
-    <div className="border-2 relative cursor-pointer border-Gray/900 mt-9 px-3 py-2.5 w-[310px] flex-shrink-0 h-[491px]">
+    <div className="border-2 relative hover:scale-95 hover:shadow-md hover:shadow-gray-500 cursor-pointer border-Gray/900 mt-9 px-3 py-2.5 w-[310px] flex-shrink-0 h-[491px]">
       <div className="">
         {image?.length > 0 && (
           <Image

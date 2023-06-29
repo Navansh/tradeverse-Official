@@ -1,7 +1,7 @@
 "use client";
 import { product, profile } from "@/assets";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaMicrophoneAlt } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import CategoryCard from "./CategoryCard";
@@ -9,6 +9,14 @@ import { products } from "@/constant";
 import { useContractContext } from "@/context/ContractProvider";
 import { Love_Light } from "next/font/google";
 import { useStoreContext } from "@/context/StoreContext";
+import { db } from "../firebase";
+import { useAccount } from "@particle-network/connect-react-ui";
+import {
+  collection,
+  onSnapshot,
+  query,
+  QuerySnapshot,
+} from "firebase/firestore";
 
 interface Product {
   name: string;
@@ -26,12 +34,22 @@ interface Product {
   id: string;
 }
 
+
+interface Message {
+  id: string;
+  profile: string;
+  desc: string;
+  location: string;
+  cover: string;
+  category: string;
+  storeName: string
+}
+
 const Mainbody = () => {
   const { allProduct } = useContractContext();
-  const { allStream } = useStoreContext();
-  console.log(allProduct);
+  const { allStream, allStore } = useStoreContext();
   return (
-    <div className="flex-1 h-screen pb-[30px] mx-9 flex flex-col items-start mt-9">
+    <div className="flex-1 h-screen w-screen pb-[30px] mx-9 flex flex-col items-start mt-9">
       <div className="flex overflow-hidden border-b-2 border-Foundation w-full py-12 items-center">
         {allStream.map((item: any, i: any) => (
           <div key={i}>
@@ -64,16 +82,19 @@ const Mainbody = () => {
       )}
 
       {/** product */}
-      <div className="border-b-2 border-Foundation flex !flex-wrap items-start justify-start gap-12 pb-24 w-ful">
+      <div className="border-b-2 border-Foundation w-full flex !flex-wrap items-start justify-start gap-12 pb-24 w-ful">
         {allProduct.map((item: Product, i: any) => (
           <ProductCard key={i} {...item} />
         ))}
       </div>
 
-      <div className="border-b-2 border-Foundation flex !flex-wrap items-start justify-start gap-12 pb-24 w-ful">
-        {products.map((item, i) => (
-          <CategoryCard key={i} {...item} />
-        ))}
+      <div className="flex-col items-start pt-6">
+        <h1 className="text-[24px] font-bold">Browse Stores</h1>
+        <div className="border-b-2 border-Foundation w-screen flex !flex-wrap items-start justify-start gap-12 pb-24 w-ful">
+          {allStore?.map((item: Message, i) => (
+            <CategoryCard key={i} {...item} />
+          ))}
+        </div>
       </div>
     </div>
   );

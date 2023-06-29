@@ -4,12 +4,11 @@ import Account from "./Steps/Account";
 import Email from "./Steps/Email";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { auth, signUp } from "@/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { useContractContext } from "@/context/ContractProvider";
 import { useStoreContext } from "@/context/StoreContext";
 import Loader from "../Loader";
-import { useAccount, useAccountInfo } from "@particle-network/connect-react-ui";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "@/firebase";
+import { useAccount } from "@particle-network/connect-react-ui";
 
 interface Props {
   setActive: React.Dispatch<React.SetStateAction<string>>;
@@ -27,11 +26,12 @@ const SignUpForm = ({ setActive }: Props) => {
   const [description, setDescription] = useState("");
   const [storeName, setStoreName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [image, setImage] = useState("");
+  const [coverImage, setCoverImage] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [location, setLocation] = useState("");
   const router = useRouter();
+  const account = useAccount();
 
   const nextStep = () => {
     if (currentStep < 1) {
@@ -65,12 +65,10 @@ const SignUpForm = ({ setActive }: Props) => {
       case 1:
         return (
           <Email
-            email={email}
-            setEmail={setEmail}
-            setPassword={setPassword}
-            password={password}
-            setConfirmPassword={setConfirmPassword}
-            confirmPassword={confirmPassword}
+            image={image}
+            setImage={setImage}
+            setCoverImage={setCoverImage}
+            coverImage={coverImage}
           />
         );
       default:
@@ -83,55 +81,62 @@ const SignUpForm = ({ setActive }: Props) => {
   const handleClick = async (e?: any) => {
     e.preventDefault();
     if (currentStep === 0) {
-      if (!name || !lastName || !selectedCategory || !storeName || !description)
+      if (!selectedCategory || !storeName || !description || !location)
         return toast.error("Fill every required part");
-  
+      nextStep();
+    } else if (currentStep === 1) {
+      // Perform validation or data handling for the Email step
+      if (!image || !coverImage)
+        return toast.error("Enter email and coverImage", {
+          position: "bottom-right",
+        });
       try {
         await createStore(
           storeName,
           selectedCategory,
-          name,
-          lastName,
           description,
-          location
+          location,
+          image,
+          coverImage
         );
-        nextStep();
+        toast.success("Congratulations 😁 store created successfully", {
+          position: "bottom-left",
+        });
+        const docRef = await addDoc(collection(db, "Store"), {
+          profile: image,
+          desc: description,
+          location: location,
+          cover: coverImage,
+          category: selectedCategory,
+          storeName: storeName,
+          owner: account,
+        });
+        console.log(docRef.id);
+        router.push("/onboarding/congratulation");
       } catch (error) {
-        // Handle the error here, e.g., show an error toast
-        toast.error("Failed to create store");
+        toast.error("Huh! 😟, Creating store failed pls try again later", {
+          position: "bottom-left",
+        });
       }
-    } else if (currentStep === 1) {
-      // Perform validation or data handling for the Email step
-      if (!email || !password)
-        return toast.error("Enter email and password", {
-          position: "bottom-right",
-        });
-      if (password !== confirmPassword)
-        return toast.error("Password doesn't match", {
-          position: "bottom-right",
-        });
-  
-      signUp(email, password);
-  
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          const uid = user.uid;
-          router.push("/profile");
-        }
-      });
-  
-      router.push("/dashboard/feed");
     }
   };
-
-  const { connectId } = useAccountInfo();
 
   return (
     <form id="signup">
       {isLoading && <Loader />}
       <div className={styles.wrapper}>
+        {currentStep === 0 ? (
+          <h1 className="text-center text-[2.5rem] font-semibold">
+            Add Name and Bio
+          </h1>
+        ) : (
+          <h1 className="text-center text-[2.5rem] font-semibold">
+            Add Profile Image
+          </h1>
+        )}
+
         {renderStepComponent()}
-        <Button handleClick={handleClick} isFunc title="Set up Store" />
+        <Button handleClick={handleClick} isFunc title="Continue" />
         <span className="text-[14px] leading-[16px] cursor-pointer text-[#fff] text-center">
           Already have an account?{" "}
           <span onClick={() => setActive("login")} className="text-green">

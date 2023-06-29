@@ -4,39 +4,33 @@ import ProductCard from "./ProductCard";
 import { useContractContext } from "@/context/ContractProvider";
 
 interface Product {
-  name: string
-  desc: string
-  image: never[]
-  price: number
-  category: string
-  pid: number
-  quantity: number
-  location: string
-  max: number
-  owner: string
-  refund: number,
-  active: boolean
-  id: string
+  name: string;
+  desc: string;
+  image: never[];
+  price: number;
+  category: string;
+  pid: number;
+  quantity: number;
+  location: string;
+  max: number;
+  owner: string;
+  refund: number;
+  active: boolean;
+  id: string;
 }
 
-const Gallery = () => {
-  const { userProduct } = useContractContext()
-  console.log(userProduct)
+interface Prop {
+  userProduct: Product[];
+}
+
+const Gallery = ({ userProduct }: any) => {
   return (
     <>
-      {userProduct.length <= 0 && (
-        <div className="flex items-center justify-center text-[24px] font-bold">
-          No Product Listed
-        </div>
-      )}
-
-      {userProduct.length > 0 && (
-        <div className="flex flex-wrap gap-6 pb-[96px] items-start">
-          {userProduct.map((item: Product, i: any) => (
-            <ProductCard {...item} key={i} />
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap gap-6 pb-[96px] items-start">
+        {userProduct.map((item: Product, i: any) => (
+          <ProductCard {...item} key={i} />
+        ))}
+      </div>
     </>
   );
 };

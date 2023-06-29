@@ -29,6 +29,8 @@ interface ContractContextTypes {
   isLoading: boolean;
   setSellerIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   sellerIsActive: boolean;
+  fetchSellerProduct: (address: string) => Promise<any>;
+  sellerProduct: never[];
 }
 
 const ContractContext = createContext<ContractContextTypes | null>(null);
@@ -41,6 +43,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   const [allProduct, setAllProduct] = useState([]);
   const [userProduct, setUserProduct] = useState([]);
   const [liveEvent, setLiveEvent] = useState([]);
+  const [sellerProduct, setSellerProduct] = useState([]);
   const [sellerIsActive, setSellerIsActive] = useState(false);
   //console.log(currentUserStore);
 
@@ -89,7 +92,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
 
   const getProductDetails = async () => {
     try {
-      const result = await connectWithContract(ProductAddress, Product.abi);;
+      const result = await connectWithContract(ProductAddress, Product.abi);
       const tx = await result.getProductDetails();
       console.log(tx);
       const parsedProduct = await tx.map((item: any) => ({
@@ -123,7 +126,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
       name: item.name,
       desc: item.descLink,
       image: item.imageLink,
-      price: ethers.utils.formatEther(item.price),
+      price: Number(item.price),
       category: item.category,
       pid: Number(item.index),
       quantity: Number(item.quantity),
@@ -135,6 +138,32 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     console.log(parsedProduct);
     setUserProduct(parsedProduct);
     console.log(userProduct);
+  };
+
+  const fetchSellerProduct = async (address: string) => {
+    try {
+      const result = await getProductDetails();
+      const userProduct = result.filter((item: any) => item.owner === address);
+      const parsedProduct = await userProduct.map((item: any) => ({
+        name: item.name,
+        desc: item.descLink,
+        image: item.imageLink,
+        price: Number(item.price),
+        category: item.category,
+        pid: Number(item.index),
+        quantity: Number(item.quantity),
+        location: item.location,
+        max: Number(item.maxQuantity),
+        owner: item.owner,
+        refund: Number(item.refundTimeLimit),
+      }));
+      console.log(parsedProduct);
+      console.log(userProduct);
+      setSellerProduct(parsedProduct);
+      return parsedProduct;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -176,7 +205,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     _refundTimeLimit: number
   ) => {
     try {
-      const result = await connectWithContract(ProductAddress, Product.abi);;
+      const result = await connectWithContract(ProductAddress, Product.abi);
       setIsLoading(true);
       const tx = await result.addProduct(
         _name,
@@ -207,6 +236,8 @@ export const ContractProvider = ({ children }: ContractChildren) => {
     isLoading,
     sellerIsActive,
     setSellerIsActive,
+    fetchSellerProduct,
+    sellerProduct,
   };
   return (
     <ContractContext.Provider value={value}>

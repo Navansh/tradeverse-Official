@@ -15,8 +15,8 @@ import { product, product2, product3, product4, product5 } from "@/assets";
 
 const category = [
   {
-    title: "",
-    value: "",
+    title: "Select",
+    value: "Select",
   },
   {
     title: "Computing",

@@ -3,9 +3,7 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import { logo } from "@/assets";
 import { useRouter } from "next/router";
-import {
-  useAccount,
-} from "@particle-network/connect-react-ui";
+import { useAccount } from "@particle-network/connect-react-ui";
 import "@particle-network/connect-react-ui/dist/index.css";
 import ConnectModal from "@/components/ConnectModal";
 
@@ -26,14 +24,14 @@ const Connect = () => {
             ? "Congratulations, you're in!"
             : "Connect wallet to TradeVerse"}
         </h2>
-        <p className="text-[2vw] md:text-[16px] leading-[3vh] text-center font-semibold">
+        <p className="text-[2vw] md:text-[16px] leading-[3vh] w-[22.5rem] text-center font-semibold">
           {account
-            ? "Congratulations! Your wallet is now connected. Enjoy secure transactions on TradeVerse"
+            ? "Congratulations! Your wallet is now connected. Continue to set up your store"
             : "Connect Your Wallet for Seamless Transactions and Enhanced Security"}
         </p>
         {!account && <ConnectModal />}
         {account && (
-          <Button title="Explore marketplace" isLink link="/dashboard/feed" />
+          <Button title="Continue" isLink link="/onboarding/setUpStore" />
         )}
       </div>
     </div>

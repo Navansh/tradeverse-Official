@@ -19,7 +19,7 @@ const Onboard = () => {
           By using TradeVerse, you agree to our terms of service and privacy
           policy.
         </p>
-        <Button title="Accept and Continue" isLink link="/onboarding/Auth"  />
+        <Button title="Accept and Continue" isLink link="/onboarding/connect"  />
       </div>
     </div>
   );

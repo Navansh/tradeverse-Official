@@ -14,7 +14,7 @@ const Auth = () => {
           alt="logo"
           className="w-[80px] h-[61px] object-contain"
         />
-        {active === "signup" && (
+        {/* {active === "signup" && (
           <h2 className="text-[30px] text-center w-full leading-[40px] font-semibold">
             Signup to TradeVerse
           </h2>
@@ -24,9 +24,9 @@ const Auth = () => {
           <h2 className="text-[30px] text-center w-full leading-[40px] font-semibold">
             Login to TradeVerse
           </h2>
-        )}
+        )} */}
 
-        <div className="flex items-center justify-center space-x-9">
+        {/* <div className="flex items-center justify-center space-x-9">
           <a href="#login">
             <button
               onClick={() => setActive("login")}
@@ -51,10 +51,10 @@ const Auth = () => {
               signup
             </button>
           </a>
-        </div>
+        </div> */}
         <div className=" min-w-[490px]">
-          {active === "login" && <LoginForm />}
-          {active === "signup" && <SignUpForm setActive={setActive} />}
+          {/* {active === "login" && <LoginForm />} */}
+          <SignUpForm setActive={setActive} />
         </div>
       </div>
     </div>
