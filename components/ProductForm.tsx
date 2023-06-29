@@ -79,18 +79,25 @@ const ProductForm = () => {
     setRefundTime(e.target.value);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    addProduct(
-      title,
-      categories,
-      image,
-      description,
-      price,
-      location,
-      availability,
-      refundTime
-    );
+    try {
+      await addProduct(
+        title,
+        categories,
+        image,
+        description,
+        price,
+        location,
+        availability,
+        refundTime
+      );
+
+      window.location.reload();
+      router.push("/dashboard/feed");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

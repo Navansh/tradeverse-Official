@@ -21,7 +21,7 @@ const VideoCall = () => {
   const router = useRouter();
   const { id } = router.query;
   const [roomId, setRoomId] = useState("");
-  const { startAStream } = useStoreContext()
+  const { startAStream } = useStoreContext();
 
   // const { peerIds } = usePeers();
   // const { joinLobby } = useLobby();
@@ -44,8 +44,6 @@ const VideoCall = () => {
     }
   };
 
- 
-
   const { initialize, isInitialized } = useHuddle01();
   // const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -64,8 +62,7 @@ const VideoCall = () => {
 
   useEventListner("lobby:initialized", () => {
     iframeApi.initialize({
-      redirectUrlOnLeave:
-        "https://tradeverse-particle.vercel.app/dashboard/feed",
+      redirectUrlOnLeave: "https://tradeverse-particle.vercel.app/endCall",
       wallets: ["metamask"],
       background:
         "https://gateway.pinata.cloud/ipfs/QmWCec9nWPf7KnaBGeaWtVoPT8dBEXSWXjLhhb47RTfPUD?_gl=1*1rqjpoc*rs_ga*NzczNDkyOTU3LjE2ODc0NzY0MjE.*rs_ga_5RMPXG14TE*MTY4NzQ3NjQyMC4xLjEuMTY4NzQ3NjcyOC43LjAuMA..",
@@ -74,11 +71,11 @@ const VideoCall = () => {
   });
 
   useEventListner("room:joined", (data) => {
-    console.log(data)
+    alert(data);
   });
 
   useEventListner("room:peer-left", (data) => {
-    alert("peer left")
+    alert(data.peerId);
   });
 
   //   useEventListener("lobby:joined", () => {
@@ -96,7 +93,7 @@ const VideoCall = () => {
     <div className="">
       <HuddleIframe
         roomUrl={`https://iframe.huddle01.com/${id}`}
-        className="w-full aspect-video h-[960px] mt-[12px]"
+        className="w-full aspect-video h-[860px] mt-[30px]"
       />
       <div className="fixed top-0 w-full">
         <Navbar />

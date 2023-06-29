@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useAccount } from "@particle-network/connect-react-ui";
 import { toast } from "react-toastify";
 import connectWithContract from "@/constant/contract";
-import Product from "./TradeVerse_Product.json";
+import Product from "./Products.json";
 
 interface ContractChildren {
   children: React.ReactNode;
@@ -47,7 +47,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   const [sellerIsActive, setSellerIsActive] = useState(false);
   //console.log(currentUserStore);
 
-  const ProductAddress = "0xa0b241aCbe2bc1E61F8077DbeEC456cA5E9717Cc";
+  const ProductAddress = "0xa05AEF4B573998391cC604D99CE7689aaE73c6ec";
 
   const createAStore = async (
     _storeName: string,
