@@ -16,15 +16,13 @@ export async function connectWallet(): Promise<WALLET | undefined> {
     if (isBrowser) {
       const runtimeConnector = new RuntimeConnector(Extension);
       const res = await runtimeConnector.connectWallet(WALLET.METAMASK);
-      const capability = await runtimeConnector.checkCapability({
+      await runtimeConnector.checkCapability({
         app: appName,
       });
-      if (!capability) {
-        await runtimeConnector.createCapability({
-          app: appName,
-          wallet: WALLET.METAMASK,
-        });
-      }
+      await runtimeConnector.createCapability({
+        app: appName,
+        wallet: WALLET.METAMASK,
+      });
       return res.wallet;
     }
   } catch (error) {

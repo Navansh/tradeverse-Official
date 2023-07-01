@@ -11,7 +11,6 @@ import { db } from "@/firebase";
 import { useAccount } from "@particle-network/connect-react-ui";
 import {
   connectWallet,
-  createStore,
   getAllStores,
 } from "@/context/services/dataverseService";
 import { useContractContext } from "@/context/ContractProvider";
@@ -82,7 +81,7 @@ const SignUpForm = ({ setActive }: Props) => {
     }
   };
 
-  //const { createStore, isLoading } = useStoreContext();
+  const { createStore} = useStoreContext();
 
   const storeData = {
     storename: storeName,
@@ -104,7 +103,7 @@ const SignUpForm = ({ setActive }: Props) => {
     if (currentStep === 0) {
       if (!selectedCategory || !storeName || !description || !location)
         return toast.error("Fill every required part");
-
+      await connectWallet();
       nextStep();
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
@@ -114,16 +113,15 @@ const SignUpForm = ({ setActive }: Props) => {
         });
       try {
         setIsLoading(true);
-        await connectWallet();
-        await createStore(storeData);
-        // await createStore(
-        //   storeName,
-        //   selectedCategory,
-        //   description,
-        //   location,
-        //   image,
-        //   coverImage
-        // );
+        // await createStore(storeData);
+        await createStore(
+          storeName,
+          selectedCategory,
+          description,
+          location,
+          image,
+          coverImage
+        );
         setIsLoading(false);
         toast.success("Congratulations 😁 store created successfully", {
           position: "bottom-left",
@@ -140,6 +138,7 @@ const SignUpForm = ({ setActive }: Props) => {
         console.log(docRef.id);
         router.push("/onboarding/congratulation");
       } catch (error) {
+        setIsLoading(false);
         toast.error("Huh! 😟, Creating store failed pls try again later", {
           position: "bottom-left",
         });
