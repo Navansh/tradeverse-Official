@@ -2,14 +2,15 @@ import { profile } from "@/assets";
 import { ConnectButton } from "@particle-network/connect-react-ui";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import "@particle-network/connect-react-ui/dist/index.css";
 import { useStoreContext } from "@/context/StoreContext";
+import AccountModal from "./AccountModal";
 
 const ConnectModal = () => {
   const { userStore } = useStoreContext();
-
+  const [active, setActive] = useState(false);
   const profileImage = userStore?.map((item) => {
     return item?.profile;
   });
@@ -25,7 +26,7 @@ const ConnectModal = () => {
         accountLoading,
       }) => {
         return (
-          <div>
+          <div className="relative">
             {!account && (
               <button
                 onClick={openConnectModal}
@@ -43,13 +44,13 @@ const ConnectModal = () => {
 
             {account && (
               <button className="border-2 border-green px-5 py-2.5 rounded-full flex space-x-6 items-center">
-                <Link href="/profile">
+                <div onClick={() => setActive(!active)}>
                   <Image
                     src={profile}
                     alt="product"
                     className="w-[24px] rounded-full h-[24px] object-cover"
                   />
-                </Link>
+                </div>
                 <span onClick={openAccountModal} className="text-green">
                   {account?.slice(0, 9)}
                 </span>
@@ -61,6 +62,11 @@ const ConnectModal = () => {
                   height={30}
                 />
               </button>
+            )}
+            {active &&(
+              <div className="fixed z-[99999] right-[80px] top-[60px]">
+                 <AccountModal chain={chain} account={account} />
+              </div>
             )}
           </div>
         );

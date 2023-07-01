@@ -17,7 +17,14 @@ import right from "./right.png";
 import calender from "./calender.png";
 import bgImage from "./bgImage.png";
 import loader from "./loader.svg";
-import celo from './celo-celo-logo (1).png'
+import celo from "./celo-celo-logo (1).png";
+import setting from "./setting.png";
+import eye from "./eye.png";
+import polygon from './polygon.png'
+import blockpi from './Blockpi.png'
+import dataverse from './dataverse.png'
+import particle from './particle.png'
+import huddle from './huddle.jpeg'
 
 export {
   logo,
@@ -39,5 +46,12 @@ export {
   video,
   bgImage,
   loader,
-  celo
+  celo,
+  setting,
+  eye,
+  blockpi,
+  dataverse,
+  huddle,
+  particle,
+  polygon
 };

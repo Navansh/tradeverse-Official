@@ -27,3 +27,5 @@ export { default as CartSection } from "./CartSection";
 export { default as Cart } from "./cart/Cart";
 export { default as History } from "./cart/History";
 export { default as Tracking } from "./cart/Tracking";
+export { default as AccountModal } from "./AccountModal";
+export { default as Tech } from "./Tech";

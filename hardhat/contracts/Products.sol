@@ -127,13 +127,11 @@ contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
     ) public payable nonReentrant {
         uint256 orderId = _orderID.current();
         Order storage newOrder = orders[orderId];
-        uint256 amount = products[id].price +
+        uint256 amount = products[id].price *
             quantity +
             products[id].shippingFee;
-        require(quantity > 0, "quantity cant be zero");
         require(products[id].maxQuantity >= quantity, "out of stock");
         require(msg.value >= amount, "Insufficient payment.");
-        require(!newOrder.isPaid, "Payment has already been made.");
         require(
             products[id].status == OrderStatus.Available,
             "Product is not available."

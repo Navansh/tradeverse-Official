@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import Account from "./Steps/Account";
 import Email from "./Steps/Email";
@@ -9,6 +9,11 @@ import Loader from "../Loader";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useAccount } from "@particle-network/connect-react-ui";
+import {
+  connectWallet,
+  createStore,
+  getAllStores,
+} from "@/context/services/dataverseService";
 
 interface Props {
   setActive: React.Dispatch<React.SetStateAction<string>>;
@@ -76,13 +81,29 @@ const SignUpForm = ({ setActive }: Props) => {
     }
   };
 
-  const { createStore, isLoading } = useStoreContext();
+  //const { createStore, isLoading } = useStoreContext();
+
+  const storeData = {
+    storename: storeName,
+    location: location,
+    category: selectedCategory,
+    profileImage: image,
+    coverImage: coverImage,
+    description: description,
+  };
+
+  useEffect(() => {
+    const tx = getAllStores();
+    console.log(tx);
+  }, [account]);
 
   const handleClick = async (e?: any) => {
     e.preventDefault();
+    await connectWallet();
     if (currentStep === 0) {
       if (!selectedCategory || !storeName || !description || !location)
         return toast.error("Fill every required part");
+      
       nextStep();
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
@@ -91,27 +112,28 @@ const SignUpForm = ({ setActive }: Props) => {
           position: "bottom-right",
         });
       try {
-        await createStore(
-          storeName,
-          selectedCategory,
-          description,
-          location,
-          image,
-          coverImage
-        );
+        await createStore(storeData);
+        // await createStore(
+        //   storeName,
+        //   selectedCategory,
+        //   description,
+        //   location,
+        //   image,
+        //   coverImage
+        // );
         toast.success("Congratulations 😁 store created successfully", {
           position: "bottom-left",
         });
-        const docRef = await addDoc(collection(db, "Store"), {
-          profile: image,
-          desc: description,
-          location: location,
-          cover: coverImage,
-          category: selectedCategory,
-          storeName: storeName,
-          owner: account,
-        });
-        console.log(docRef.id);
+        // const docRef = await addDoc(collection(db, "Store"), {
+        //   profile: image,
+        //   desc: description,
+        //   location: location,
+        //   cover: coverImage,
+        //   category: selectedCategory,
+        //   storeName: storeName,
+        //   owner: account,
+        // });
+        // console.log(docRef.id);
         router.push("/onboarding/congratulation");
       } catch (error) {
         toast.error("Huh! 😟, Creating store failed pls try again later", {
@@ -123,7 +145,7 @@ const SignUpForm = ({ setActive }: Props) => {
 
   return (
     <form id="signup">
-      {isLoading && <Loader />}
+      {/* {isLoading && <Loader />} */}
       <div className={styles.wrapper}>
         {currentStep === 0 ? (
           <h1 className="text-center text-[2.5rem] font-semibold">

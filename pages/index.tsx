@@ -9,6 +9,7 @@ import {
   MainNav,
   MissionStatement,
   SellingPoint,
+  Tech,
 } from "@/components";
 import { useTradeContext } from "@/context";
 import { useEffect } from "react";
@@ -48,6 +49,7 @@ export default function Home() {
       </div>
       <div className={`bg-hero-pattern2 bg-black bg-cover py-16 bg-center ${`bg-hero-pattern3 bg-cover bg-center`}`}>
         <HowItWorks />
+        <Tech />
         <Contact />
       </div>
       <Footer />

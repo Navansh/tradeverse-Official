@@ -72,6 +72,7 @@ const ProductCard = ({
 
     getEthereumPrice();
   }, [price]);
+  const amount = price * 0.7;
   return (
     <div className="border-2 relative hover:scale-95 hover:shadow-md hover:shadow-gray-500 cursor-pointer border-Gray/900 mt-9 px-3 py-2.5 w-[310px] flex-shrink-0 h-[491px]">
       <div className="">
@@ -108,11 +109,7 @@ const ProductCard = ({
           {truncateText(name, 25)}
         </span>
         <h3 className="text-[24px] flex items-center font-bold pt-[8px]">
-          ${price} -{" "}
-          <span className="flex ietms-center">
-            {ethereumPrice}
-            <Image src={celo} alt="celo" className="w-6 h-6 object-contain" />
-          </span>
+          ${price} - <span className="flex ietms-center">{amount} MATIC</span>
         </h3>
         <div className="flex items-center text-center">
           <BsDot className="text-green text-xl" />

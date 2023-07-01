@@ -16,6 +16,7 @@ import { convertToEthereum } from "@/constant/convertionUtils";
 import { formatCurrency, getGasPrice } from "@/constant/cryptoApi";
 import Link from "next/link";
 import { useStoreContext } from "@/context/StoreContext";
+import { useAccount } from "@particle-network/connect-react-ui";
 
 interface Product {
   name: string;
@@ -38,6 +39,7 @@ interface Props {
 
 const DetailCard = ({ item }: Props) => {
   const [totalAmount, setTotalAmount] = useState(0);
+  const account = useAccount();
   const { stream } = useStoreContext();
   const { handleAddToCart, handleUpdateQuantity } = useTradeContext();
   const [ethereumPrice, setEthereumPrice] = useState<string>("");
@@ -49,7 +51,7 @@ const DetailCard = ({ item }: Props) => {
   const { placeOrder } = useContractContext();
   console.log(ethereumPrice);
 
-  const [transactionFee, setTransactionFee] = useState<number | null>(null);
+  const [transactionFee, setTransactionFee] = useState<string | null>(null);
 
   const handlePurchase = async () => {
     await placeOrder(item.pid, ethereumPrice);
@@ -60,7 +62,7 @@ const DetailCard = ({ item }: Props) => {
       try {
         const ethereumAmount = await convertToEthereum(
           item.price,
-          "ethereum",
+          "matic",
           "usd"
         );
         setEthereumPrice(ethereumAmount);
@@ -73,38 +75,35 @@ const DetailCard = ({ item }: Props) => {
   }, [item.price]);
 
   useEffect(() => {
-    // Fetch the gas price and calculate the transaction fee
-    getGasPrice()
-      .then((gasPrice: ethers.BigNumber) => {
-        const gasLimit = 21000; // Replace with the appropriate gas limit for your transaction
-        const fee = gasPrice.mul(gasLimit);
-        const transactionFee = parseFloat(ethers.utils.formatEther(fee));
-        setTransactionFee(transactionFee);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
-  const formattedTransactionFee = formatCurrency(transactionFee, "USD");
-
-  const transFee =
-    formattedTransactionFee !== null
-      ? formattedTransactionFee.toFixed(0)
-      : "N/A";
-  console.log(transFee);
-
-  const calculateTotalAmount = () => {
-    const fee = transactionFee !== null ? transactionFee : 0; // Set fee to 0 if transactionFee is null
-
-    const total = fee + item.price + 3;
-    return total;
-  };
-
-  useEffect(() => {
-    const total = calculateTotalAmount();
-    setTotalAmount(total);
-  }, []);
+    const fetchGasPrice = async () => {
+      await fetch(
+        "https://polygon-mumbai.blockpi.network/v1/rpc/1765140f9abdd58481722479f70afdf328209c55",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            method: "eth_gasPrice",
+            params: [],
+            id: 1,
+          }),
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.result);
+          setTransactionFee((Number(data.result) / 10 ** 18).toFixed(4));
+          // Handle the response data here
+        })
+        .catch((error) => {
+          console.error(error);
+          // Handle any errors here
+        });
+    };
+    fetchGasPrice();
+  }, [account]);
 
   const info = [
     {
@@ -118,13 +117,14 @@ const DetailCard = ({ item }: Props) => {
       active: "seller",
     },
   ];
+  const totalBalance = item.price * 0.7;
   return (
     <div className="border-2  relative border-Foundation px-4 py-2.5 h-[790px] w-[640px]">
       <div className="flex flex-col mt-8 mx-9 items-start">
         <div className="border-b-2 pb-6 flex flex-col items-start w-full border-Foundation">
           <span className="text-[18px] font-normal">{item?.name}</span>
           <span className="text-[24px] font-bold">
-            {item?.price} - {ethereumPrice}
+            ${item?.price} - {totalBalance} MATIC
           </span>
           <div className="flex items-center text-center space-x-">
             <BsDot className="text-green text-xl" />
@@ -176,24 +176,24 @@ const DetailCard = ({ item }: Props) => {
                 {item?.price}
               </span>
               <span className="text-Foundation text-[16px] leading-[24px] font-bold">
-                {formattedTransactionFee}
+                {transactionFee}
               </span>
               <span className="text-Foundation text-[16px] leading-[24px] font-bold">
                 $3
               </span>
               <span className="text-[#fff] text-[24px] leading-[28.33px] font-bold">
-                ${item.price + transFee + 3}
+                $
               </span>
             </div>
             <div className="flex flex-col items-center space-y-[10.5px]">
               <span className="text-Foundation text-[16px] leading-[24px] font-bold">
-                {ethereumPrice} ETH
+                {totalBalance} MATIC
               </span>
               <span className="text-Foundation text-[16px] leading-[24px] font-bold">
                 {transactionFee}
               </span>
               <span className="text-Foundation text-[16px] leading-[24px] font-bold">
-                $3
+                {item.refund}
               </span>
               <span className="text-[#fff] text-[24px] leading-[28.33px] font-bold">
                 {totalAmount}
@@ -204,7 +204,7 @@ const DetailCard = ({ item }: Props) => {
 
         <div className="flex border-b-2 border-[#fff] w-full py-6 flex-col space-y-[16px">
           <div className="flex  items-center justify-around w-full mt-6 space-x-4">
-            <span className="text-[18px] font-bold">Quantity:</span>
+            <span  className="text-[18px] font-bold">Quantity:</span>
             <div className="border-4 text-[16px] font-bold border-Bar rounded-[8px] w-[123px] flex items-center h-[48px]">
               <span
                 onClick={() => handleUpdateQuantity(item.quantity, -1)}
