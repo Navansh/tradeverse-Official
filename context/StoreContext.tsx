@@ -21,7 +21,7 @@ interface ContextProps {
     location: string
   ) => Promise<void>;
   startAStream: (roomId: string) => Promise<void>;
-  cancelAStream: () => Promise<void>
+  cancelAStream: () => Promise<void>;
   isLoading: boolean;
   userStore: Message[] | undefined;
   stream: never[];
@@ -29,7 +29,7 @@ interface ContextProps {
   allStream: never[];
   allStore: Message[] | undefined;
   fetchSellerStore: (address: string) => Promise<any>;
-  setUserStore: React.Dispatch<React.SetStateAction<Message[] | undefined>>
+  setUserStore: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
 }
 
 interface Message {
@@ -46,7 +46,7 @@ interface Message {
 const StoreContext = createContext<ContextProps | null>(null);
 
 export const StoreProvider = ({ children }: ContextNode) => {
-  const StoreAddress = "0x4D4AFFb350B2e45c024f609C848b3b4D427DD7db";
+  const StoreAddress = "0xe8F4697dc0A02AA3AF4DAE620df54D1EF31EEf80";
   const contractInitiate = connectWithContract(StoreAddress, Store.abi);
   const account = useAccount();
   console.log(account);
@@ -142,8 +142,6 @@ export const StoreProvider = ({ children }: ContextNode) => {
     return () => unsubscribe();
   };
 
-
-
   const fetchStream = async (address: string) => {
     try {
       const contract = contractInitiate;
@@ -227,7 +225,7 @@ export const StoreProvider = ({ children }: ContextNode) => {
     allStream,
     allStore,
     fetchSellerStore,
-    setUserStore
+    setUserStore,
   };
   return (
     <StoreContext.Provider value={value}>{children}</StoreContext.Provider>

@@ -47,7 +47,7 @@ export const ContractProvider = ({ children }: ContractChildren) => {
   const [sellerIsActive, setSellerIsActive] = useState(false);
   //console.log(currentUserStore);
 
-  const ProductAddress = "0xa05AEF4B573998391cC604D99CE7689aaE73c6ec";
+  const ProductAddress = "0xb8DcdfAB4eB5624080592A4a7f8b12d58B9f2C4b";
 
   const createAStore = async (
     _storeName: string,

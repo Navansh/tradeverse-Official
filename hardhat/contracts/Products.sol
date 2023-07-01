@@ -4,10 +4,8 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/utils/escrow/RefundEscrow.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
-contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
+contract Products is ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _productID;
     Counters.Counter private _orderID;
@@ -49,13 +47,10 @@ contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
         address nftAddress;
     }
 
-    constructor() ERC1155("") {}
-
     mapping(uint256 => Order) public orders;
     mapping(uint256 => Product) public products;
     mapping(address => Product[]) addressToProducts;
     mapping(address => Product) public addressToSingleProduct;
-    mapping(address => mapping(uint256 => uint256)) private sellerNFTBalances;
     Product[] allProduct;
     Order[] allOrders;
 
@@ -111,13 +106,6 @@ contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
         newProduct.shippingFee = _refundTimeLimit;
         allProduct.push(newProduct);
         _productID.increment();
-
-        // Mint NFTs to the seller's address
-        _mint(msg.sender, productId, _maxQuantity, "");
-
-        // Update the seller's NFT balance
-        sellerNFTBalances[msg.sender][productId] = _maxQuantity;
-
         return productId;
     }
 
@@ -127,22 +115,22 @@ contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
     ) public payable nonReentrant {
         uint256 orderId = _orderID.current();
         Order storage newOrder = orders[orderId];
-        uint256 amount = products[id].price *
-            quantity +
-            products[id].shippingFee;
+        // uint256 amount = products[id].price *
+        //     quantity +
+        //     products[id].shippingFee;
         require(products[id].maxQuantity >= quantity, "out of stock");
-        require(msg.value >= amount, "Insufficient payment.");
+        require(msg.value >= products[id].price, "Insufficient payment.");
         require(
             products[id].status == OrderStatus.Available,
             "Product is not available."
         );
         address payable _seller = products[id].owner; // Only allow the owner to sell items for now
         RefundEscrow escrowInstance = new RefundEscrow(_seller);
-        escrowInstance.deposit{value: amount}(payable(msg.sender));
+        escrowInstance.deposit{value: msg.value}(payable(msg.sender));
         newOrder.orderId = orderId;
         newOrder.buyer = msg.sender;
         newOrder.seller = _seller;
-        newOrder.price = amount;
+        newOrder.price = products[id].price;
         newOrder.status = OrderStatus.Pending;
         newOrder.isPaid = true;
         newOrder.isFulfilled = false;
@@ -150,20 +138,8 @@ contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
         newOrder.escrow = escrowInstance;
         newOrder.amount = quantity;
         newOrder.nftAddress = products[id].nftAddress;
-
-        // Transfer NFTs from the seller to the buyer
-        safeTransferFrom(_seller, msg.sender, id, quantity, "");
-
-        products[id].maxQuantity -= quantity;
         allOrders.push(newOrder);
         emit OrderCreated(orderId, msg.sender, _seller, products[id].price);
-    }
-
-    function getSellerNFTBalance(
-        address seller,
-        uint256 productId
-    ) public view returns (uint256) {
-        return sellerNFTBalances[seller][productId];
     }
 
     event OrderDelivered(uint256 orderId);
@@ -211,18 +187,5 @@ contract Products is ReentrancyGuard, ERC1155, ERC1155Supply {
         address _owner
     ) external view returns (Product[] memory) {
         return addressToProducts[_owner];
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _beforeTokenTransfer(
-        address operator,
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) internal override(ERC1155, ERC1155Supply) {
-        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 }
