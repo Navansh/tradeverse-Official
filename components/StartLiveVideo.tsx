@@ -11,6 +11,8 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useContractContext } from "@/context/ContractProvider";
 import { useStoreContext } from "@/context/StoreContext";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 const StartLiveVideo = () => {
   const { getRoomId } = useTradeContext();
@@ -34,17 +36,20 @@ const StartLiveVideo = () => {
       setIsLoading(true);
       setRoomId(id);
       if (roomId) {
+        await startAStream(roomId);
         setIsLoading(false);
-        startAStream(roomId);
         router.push(`/meet/${roomId}`);
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
+      toast.error("Starting the call failed 😟");
       // Handle the error accordingly
     }
   };
   return (
     <div className="max-w-[776px] max-h-[796px] bg-Gray/900 rounded-[8px] px-[208px] py-[66px] space-y-16 flex-shrink-0 flex flex-col item-center justify-center">
+      {isLoading && <Loader />}
       <div className="flex flex-col items-center space-x-[16px]">
         <div className="flex w-[80px]  h-[80px] p-[20px] items-center justify-center flex-shrink-0 rounded-[80px] bg-white/25">
           <Image

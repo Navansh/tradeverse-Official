@@ -9,7 +9,7 @@ import { Console } from "console";
 
 const isBrowser = typeof window !== "undefined";
 
-export const appName = "Tradeversetest1";
+export const appName = "Tradeverseofficial";
 
 export async function connectWallet(): Promise<WALLET | undefined> {
   try {
@@ -53,7 +53,7 @@ export async function createStore(storeData: {
     await runtimeConnector.connectWallet(WALLET.METAMASK);
     await runtimeConnector.createStream({
       modelId:
-        "kjzl6hvfrbw6c68bxjgcw120dqns7k7fu88i4gj8f4m4psj53rubm54vq6q5un7", // Replace with the actual model ID for your store model
+        "kjzl6hvfrbw6c5m7wy2ca6q4le7ihjczo1cx65wvzonrcg1c53l0kk6c7j50b8r", // Replace with the actual model ID for your store model
       streamContent: {
         // appVersion: "0.0.1",
         storename,
@@ -74,7 +74,7 @@ export async function getAllStores(): Promise<any[]> {
     const runtimeConnector = new RuntimeConnector(Extension);
     const streams = await runtimeConnector.loadStreamsBy({
       modelId:
-        "kjzl6hvfrbw6c68bxjgcw120dqns7k7fu88i4gj8f4m4psj53rubm54vq6q5un7",
+        "kjzl6hvfrbw6c5m7wy2ca6q4le7ihjczo1cx65wvzonrcg1c53l0kk6c7j50b8r",
     });
     console.log(streams);
     if (Array.isArray(streams)) {

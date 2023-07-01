@@ -16,6 +16,8 @@ const styles = {
 
 import { sendFileToIPFS } from "@/constant/pinata";
 import { category } from "@/constant";
+import Loader from "./Loader";
+import { toast } from "react-toastify";
 
 const ProductForm = () => {
   const router = useRouter();
@@ -82,6 +84,7 @@ const ProductForm = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       await addProduct(
         title,
         categories,
@@ -92,16 +95,19 @@ const ProductForm = () => {
         availability,
         refundTime
       );
-
+      setIsLoading(false);
+      toast.success("Product listing successful 😁");
       window.location.reload();
       router.push("/dashboard/feed");
     } catch (error) {
+      toast.error("Product listing failed try again later 😟");
       console.log(error);
     }
   };
 
   return (
     <div className="h-screen overflow-auto py-[80px] scrollbar-hide">
+      {isLoading && <Loader />}
       <div className="flex-1 m-6 items-start">
         <div
           onClick={() => router.back()}
