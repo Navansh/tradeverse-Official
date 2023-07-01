@@ -100,7 +100,7 @@ const SignUpForm = ({ setActive }: Props) => {
 
   const handleClick = async (e?: any) => {
     e.preventDefault();
-    await connectWallet();
+
     if (currentStep === 0) {
       if (!selectedCategory || !storeName || !description || !location)
         return toast.error("Fill every required part");
@@ -113,7 +113,8 @@ const SignUpForm = ({ setActive }: Props) => {
           position: "bottom-right",
         });
       try {
-        setIsLoading(true)
+        setIsLoading(true);
+        await connectWallet();
         await createStore(storeData);
         // await createStore(
         //   storeName,
@@ -123,7 +124,7 @@ const SignUpForm = ({ setActive }: Props) => {
         //   image,
         //   coverImage
         // );
-        setIsLoading(false)
+        setIsLoading(false);
         toast.success("Congratulations 😁 store created successfully", {
           position: "bottom-left",
         });
