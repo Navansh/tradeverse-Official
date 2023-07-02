@@ -34,9 +34,9 @@ const StartLiveVideo = () => {
     try {
       const id = await getRoomId();
       setIsLoading(true);
+      await startAStream(id);
       setRoomId(id);
       if (roomId) {
-        await startAStream(roomId);
         setIsLoading(false);
         router.push(`/meet/${roomId}`);
       }

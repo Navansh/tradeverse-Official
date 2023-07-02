@@ -1,8 +1,8 @@
 export const config = {
-  slug: "etrade",
-  name: "TradeverseEcommerce",
+  slug: "ecommerce",
+  name: "TradeverseOfficialEcommerce",
   logo: "https://example.com/logo.png",
-  website: "http://localhost:3000",
+  website: "https://tradeverse-particle.vercel.app",
   defaultFolderName: "Untitled",
   description: "A marketplace for trading various products.",
   models: [
@@ -14,6 +14,10 @@ export const config = {
     {
       isPublicDomain: true,
       schemaName: "store.graphql",
+    },
+    {
+      isPublicDomain: true,
+      schemaName: "notification.graphql",
     },
   ],
   ceramicUrl: null,
