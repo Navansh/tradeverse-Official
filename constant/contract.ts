@@ -21,7 +21,7 @@ const particle = new ParticleNetwork({
   },
 });
 
-const particleProvider = new ParticleProvider(particle.auth);
+ const particleProvider = new ParticleProvider(particle.auth);
 
 export default function connectWithContract(
   contractAddress: string,
@@ -39,4 +39,4 @@ export default function connectWithContract(
   return contract;
 }
 
-export { connectWithContract };
+export { connectWithContract, particle, particleProvider };

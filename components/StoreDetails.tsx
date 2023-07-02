@@ -5,6 +5,8 @@ import Button from "./Button";
 import Gallery from "./Gallery";
 import { useStoreContext } from "@/context/StoreContext";
 import { useContractContext } from "@/context/ContractProvider";
+import { useAccount } from "@particle-network/connect-react-ui";
+import { useNotification } from "@/context/hooks/useNotification";
 
 interface Message {
   id: string;
@@ -18,19 +20,19 @@ interface Message {
 }
 
 interface Product {
-  name: string
-  desc: string
-  image: never[]
-  price: number
-  category: string
-  pid: number
-  quantity: number
-  location: string
-  max: number
-  owner: string
-  refund: number,
-  active: boolean
-  id: string
+  name: string;
+  desc: string;
+  image: never[];
+  price: number;
+  category: string;
+  pid: number;
+  quantity: number;
+  location: string;
+  max: number;
+  owner: string;
+  refund: number;
+  active: boolean;
+  id: string;
 }
 
 const StoreDetails = ({
@@ -44,10 +46,10 @@ const StoreDetails = ({
   storeName,
 }: Message) => {
   const [active, setActive] = useState("about");
-  //const [sellerProduct, setSellerProduct] = useState<Product[] >([]);
- // const { sellerProduct } = useContractContext()
-  //console.log(sellerProduct);
-  const { fetchSellerProduct, sellerProduct } = useContractContext()
+  const account = useAccount();
+  const { optInNotification, optOutNotification } = useNotification();
+  const [isOptIn, setIsOptIn] = useState(false);
+  const { fetchSellerProduct, sellerProduct } = useContractContext();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -55,6 +57,14 @@ const StoreDetails = ({
     };
     fetchProduct();
   }, [owner]);
+
+  const handleOptIn = () => {
+    if (!isOptIn) {
+      optInNotification();
+    } else {
+      optOutNotification();
+    }
+  };
   return (
     <div className="h-screen overflow-y-scroll scrollbar-hide">
       <div>
@@ -83,9 +93,26 @@ const StoreDetails = ({
               className={`absolute bottom-6 left-6 w-[200px] h-[200px] object-cover ring-4 ring-Gray/900 rounded-full flex-shrink-0 `}
             />
           </div>
-          <div className="flex items-end justify-end w-full space-x-[16px] mt-6">
-            <Button title="Turn on notification" isLink isBorder />
-          </div>
+          {owner === account && (
+            <div className="flex items-end justify-end w-full space-x-[16px] mt-6">
+              <Button title="Edit Profile" isFunc isBorder />
+              <Button
+                title="Create new listing"
+                isLink
+                link="/dashboard/newListing"
+              />
+            </div>
+          )}
+          {owner != account && (
+            <div className="flex items-end justify-end w-full space-x-[16px] mt-6">
+              <Button
+                title="Turn on notification"
+                isFunc
+                handleClick={handleOptIn}
+                isBorder
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col items-start space-y-6 pb-6 border-b border-[#E6E6E6]">
@@ -124,9 +151,9 @@ const StoreDetails = ({
           </a>
         </div>
 
-        <div className="mt-6">{active === "gallery" &&
-               <Gallery userProduct={sellerProduct}/>
-        }</div>
+        <div className="mt-6">
+          {active === "gallery" && <Gallery userProduct={sellerProduct} />}
+        </div>
       </div>
     </div>
   );

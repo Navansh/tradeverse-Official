@@ -1,0 +1,10 @@
+type store @createModel(accountRelation: LIST, description: "store") {
+  storename: String! @string(maxLength: 100)
+  location: String! @string(maxLength: 200)
+  category: String! @string(maxLength: 100)
+  profileImage: String @string(maxLength: 200)
+  coverImage: String @string(maxLength: 200)
+  description: String! @string(maxLength: 3000)
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

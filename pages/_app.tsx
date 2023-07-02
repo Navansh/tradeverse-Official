@@ -10,8 +10,18 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ContractProvider } from "@/context/ContractProvider";
 import { StoreProvider } from "@/context/StoreContext";
+import { evmWallets } from "@particle-network/connect";
+import { Chat, ENV } from "@pushprotocol/uiweb";
+import { ITheme } from "@pushprotocol/uiweb";
+import { ethers } from "ethers";
+import { particleProvider } from "@/constant/contract";
 
 export default function App({ Component, pageProps }: AppProps) {
+  // Creating a new web3 provider with window.ethereum
+  const provider = new ethers.providers.Web3Provider(particleProvider, "any");
+
+  // Getting the signer
+  const signer = provider.getSigner();
   return (
     <ModalProvider
       options={{
@@ -33,7 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
           //prompt set master password. 0: None(default), 1: Once, 2: Always
           promptMasterPasswordSettingWhenLogin: 1,
         },
-        // wallets: evmWallets({ qrcode: false }),
+        wallets: evmWallets({ qrcode: false }),
       }}
       theme={"light"}
       language={"en"} //optional：localize, default en
@@ -47,6 +57,12 @@ export default function App({ Component, pageProps }: AppProps) {
         "facebook",
       ]}
     >
+            <Chat
+          account="0x6430C47973FA053fc8F055e7935EC6C2271D5174" //user address
+          supportAddress="0xd9c1CCAcD4B8a745e191b62BA3fcaD87229CB26d" //support address
+          signer={signer}
+          env={ENV.STAGING}
+        />
       <Provider store={store}>
         <ContractProvider>
           <TradeVerseProvider>

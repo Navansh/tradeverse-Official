@@ -1,19 +1,15 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import Account from "./Steps/Account";
 import Email from "./Steps/Email";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { useStoreContext } from "@/context/StoreContext";
 import Loader from "../Loader";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useAccount } from "@particle-network/connect-react-ui";
-import {
-  connectWallet,
-  getAllStores,
-} from "@/context/services/dataverseService";
-import { useContractContext } from "@/context/ContractProvider";
+import { useDataverse } from "@/context/hooks/useDataverse";
 
 interface Props {
   setActive: React.Dispatch<React.SetStateAction<string>>;
@@ -81,7 +77,7 @@ const SignUpForm = ({ setActive }: Props) => {
     }
   };
 
-  const { createStore} = useStoreContext();
+  // const { createStore} = useStoreContext();
 
   const storeData = {
     storename: storeName,
@@ -92,10 +88,12 @@ const SignUpForm = ({ setActive }: Props) => {
     description: description,
   };
 
+  const { createStore, getAllStores, pkh } = useDataverse();
+
   useEffect(() => {
     const tx = getAllStores();
     console.log(tx);
-  }, [account]);
+  }, []);
 
   const handleClick = async (e?: any) => {
     e.preventDefault();
@@ -103,7 +101,6 @@ const SignUpForm = ({ setActive }: Props) => {
     if (currentStep === 0) {
       if (!selectedCategory || !storeName || !description || !location)
         return toast.error("Fill every required part");
-      await connectWallet();
       nextStep();
     } else if (currentStep === 1) {
       // Perform validation or data handling for the Email step
@@ -113,15 +110,7 @@ const SignUpForm = ({ setActive }: Props) => {
         });
       try {
         setIsLoading(true);
-        // await createStore(storeData);
-        await createStore(
-          storeName,
-          selectedCategory,
-          description,
-          location,
-          image,
-          coverImage
-        );
+        await createStore(storeData);
         setIsLoading(false);
         toast.success("Congratulations 😁 store created successfully", {
           position: "bottom-left",

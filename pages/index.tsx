@@ -11,9 +11,6 @@ import {
   SellingPoint,
   Tech,
 } from "@/components";
-import { useTradeContext } from "@/context";
-import { useEffect } from "react";
-import { Mode, WALLET } from "@dataverse/runtime-connector";
 import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });

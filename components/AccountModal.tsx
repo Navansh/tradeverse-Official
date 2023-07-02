@@ -7,7 +7,8 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { eye, setting } from "@/assets";
 import { FaChevronRight, FaPlus } from "react-icons/fa";
 import Link from "next/link";
-import { connectWallet } from "@/context/services/dataverseService";
+import { useDataverse } from "@/context/hooks/useDataverse";
+import { WALLET } from "@dataverse/runtime-connector";
 
 interface Props {
   chain: ChainInfo | undefined;
@@ -16,6 +17,7 @@ interface Props {
 
 const AccountModal = ({ chain, account }: Props) => {
   const [balance, setBalance] = useState("");
+  const { createCapability, checkCapability } = useDataverse();
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -48,11 +50,22 @@ const AccountModal = ({ chain, account }: Props) => {
     fetchBalance();
   }, [account]);
 
+  async function initiateCapability() {
+    const res = await checkCapability();
+    if (res === false) {
+      await createCapability(WALLET.METAMASK);
+    }
+  }
+
   const totalBalance = parseFloat(balance) * 0.7;
   return (
     <div className="bg-Gray/900 w-[400px] h-[419px] p-[40px]">
       <div className="flex items-center space-x-[60px]">
-        <Button title="Create Capability" isFunc handleClick={connectWallet} />
+        <Button
+          title="Create Capability"
+          isFunc
+          handleClick={initiateCapability}
+        />
         <Image
           src={setting}
           alt="setting"
