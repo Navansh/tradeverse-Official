@@ -7,12 +7,25 @@ import {
   RESOURCE,
   StreamContent,
   StreamObject,
+  Mode,
 } from "@dataverse/runtime-connector";
 import { SignMethod } from "@dataverse/runtime-connector";
 import { toast } from "react-toastify";
+import Store from "../Store.json";
 
 export function useDataverse() {
   const isBrowser = typeof window !== "undefined";
+  const StoreAddress = "0xe8F4697dc0A02AA3AF4DAE620df54D1EF31EEf80";
+
+  useEffect(() => {
+    if (isBrowser) {
+      import("@dataverse/runtime-connector").then((module) => {
+        const RuntimeConnector = module.RuntimeConnector;
+        setRuntimeConnector(new RuntimeConnector(Extension));
+      });
+    }
+    connectWallet();
+  }, [isBrowser]);
 
   const appName = "TradeverseOfficialEcommerce";
   const [runtimeConnector, setRuntimeConnector] = useState<RuntimeConnector>();
@@ -40,15 +53,66 @@ export function useDataverse() {
     }
   }
 
-  useEffect(() => {
-    if (isBrowser) {
-      import("@dataverse/runtime-connector").then((module) => {
-        const RuntimeConnector = module.RuntimeConnector;
-        setRuntimeConnector(new RuntimeConnector(Extension));
+  async function startAStream(callId: string) {
+    try {
+      await connectWallet();
+      await initiateCapability();
+      const res = await runtimeConnector?.contractCall({
+        contractAddress: StoreAddress,
+        abi: Store.abi,
+        method: "startStream",
+        params: [callId],
+        mode: Mode.Write,
       });
+      toast.success("Your call start any minute from now");
+    } catch (error) {
+      toast.error(
+        "Failed, Pls install dataverse Wallet and make sure you have some matic in wallet"
+      );
+      console.log(error);
     }
-    connectWallet();
-  }, [isBrowser]);
+  }
+
+  async function creatAStore(storeData: {
+    storename: string;
+    category: string;
+    description: string;
+    location: string;
+    profileImage: string;
+    coverImage: string;
+  }) {
+    const {
+      category,
+      coverImage,
+      description,
+      location,
+      profileImage,
+      storename,
+    } = storeData;
+    try {
+      await connectWallet();
+      await initiateCapability();
+      const res = await runtimeConnector?.contractCall({
+        contractAddress: StoreAddress,
+        abi: Store.abi,
+        method: "createAStore",
+        params: [
+          storename,
+          category,
+          description,
+          location,
+          profileImage,
+          coverImage,
+        ],
+        mode: Mode.Write,
+      });
+      toast.success("Store Created successfully");
+    } catch (error) {
+      toast.error(
+        "Failed, Pls install dataverse Wallet and make sure you have some matic in wallet"
+      );
+    }
+  }
 
   async function acceptTermsAndConditions() {
     try {
@@ -119,7 +183,8 @@ export function useDataverse() {
 
   async function getAllStores(): Promise<any[]> {
     const streams = await runtimeConnector?.loadStreamsBy({
-      modelId: "kjzl6hvfrbw6c6mcmmbwz7b4x3kn2qmcocg2hbdb6doudo69mitz3zsn7e8238n"
+      modelId:
+        "kjzl6hvfrbw6c6mcmmbwz7b4x3kn2qmcocg2hbdb6doudo69mitz3zsn7e8238n",
     });
     console.log(streams);
     if (Array.isArray(streams)) {
@@ -146,5 +211,7 @@ export function useDataverse() {
     pkh,
     sendNotification,
     acceptTermsAndConditions,
+    creatAStore,
+    startAStream,
   };
 }

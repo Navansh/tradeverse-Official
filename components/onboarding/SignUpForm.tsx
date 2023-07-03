@@ -88,7 +88,7 @@ const SignUpForm = ({ setActive }: Props) => {
     description: description,
   };
 
-  const { createStore, getAllStores, pkh } = useDataverse();
+  const { createStore, getAllStores, pkh, creatAStore } = useDataverse();
 
   useEffect(() => {
     const loadPost = async () => {
@@ -103,7 +103,7 @@ const SignUpForm = ({ setActive }: Props) => {
       console.log(content);
     };
 
-    loadPost()
+    loadPost();
   }, []);
 
   const handleClick = async (e?: any) => {
@@ -121,6 +121,7 @@ const SignUpForm = ({ setActive }: Props) => {
         });
       try {
         setIsLoading(true);
+        await creatAStore(storeData);
         await createStore(storeData);
         setIsLoading(false);
         toast.success("Congratulations 😁 store created successfully", {

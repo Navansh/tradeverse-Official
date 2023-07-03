@@ -13,6 +13,7 @@ import { useContractContext } from "@/context/ContractProvider";
 import { useStoreContext } from "@/context/StoreContext";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import { useDataverse } from "@/context/hooks/useDataverse";
 
 const StartLiveVideo = () => {
   const { getRoomId } = useTradeContext();
@@ -20,7 +21,7 @@ const StartLiveVideo = () => {
   const { initialize, isInitialized } = useHuddle01();
 
   const [isLoading, setIsLoading] = useState(false);
-  const { startAStream } = useStoreContext();
+  const { startAStream } = useDataverse();
   const router = useRouter();
   console.log(roomId);
 
@@ -37,7 +38,6 @@ const StartLiveVideo = () => {
       await startAStream(id);
       setRoomId(id);
       if (roomId) {
-        setIsLoading(false);
         router.push(`/meet/${roomId}`);
       }
     } catch (error) {
