@@ -91,8 +91,19 @@ const SignUpForm = ({ setActive }: Props) => {
   const { createStore, getAllStores, pkh } = useDataverse();
 
   useEffect(() => {
-    const tx = getAllStores();
-    console.log(tx);
+    const loadPost = async () => {
+      const res = await getAllStores();
+      let content = null;
+
+      if (typeof res === "string") {
+        content = res;
+      } else {
+        content = res;
+      }
+      console.log(content);
+    };
+
+    loadPost()
   }, []);
 
   const handleClick = async (e?: any) => {

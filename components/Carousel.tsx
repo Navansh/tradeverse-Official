@@ -19,10 +19,18 @@ const Carousel = ({ children, indicators }: any) => {
         {children}
       </div>
       <div className="absolute inset-0 flex items-center justify-between p-4">
-        <button onClick={prev} className="bg-black/30 p-1 rounded-full">
+        <button
+          title="jfk"
+          onClick={prev}
+          className="bg-black/30 p-1 rounded-full"
+        >
           <FaChevronLeft size={25} />
         </button>
-        <button onClick={next} className="bg-black/30 p-1 rounded-full">
+        <button
+          title="fj"
+          onClick={next}
+          className="bg-black/30 p-1 rounded-full"
+        >
           <FaChevronRight size={25} />
         </button>
       </div>

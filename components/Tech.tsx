@@ -5,11 +5,11 @@ import { blockpi, dataverse, huddle, particle, polygon } from "@/assets";
 
 const Tech = () => {
   return (
-    <div className="py-[40px] w-full bg- my-9 bg-gradient-to-r from bg-Gray/900/30 to-[#1C2631]  space-y-[16px] h-[247px] flex flex-col items-start">
-      <div className="bg-gradient-to-tr from bg-Gray/900/50 to-[#1C2631]  fixed z-[6666]" />
+    <div className="py-[40px] w-full bg- my-9 bg-Gray/900  space-y-[16px] h-[247px] flex flex-col scrollbar-hide items-start">
+      <div className=" fixed z-[6666]" />
       <h1 className="text-[40px] font-bold ml-[40px]">Technologies Used</h1>
 
-      <Marquee speed={80} className="mt-[40px] ">
+      <Marquee speed={80} className="mt-[40px] scrollbar-hide overflow-hidden">
         <div className="flex space-x-[40px] overflow-hidden scrollbar-hide">
           <Image
             src={polygon}
