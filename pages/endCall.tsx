@@ -1,12 +1,13 @@
 import { logo } from "@/assets";
 import { Button, Navbar, Sidebar } from "@/components";
 import { useStoreContext } from "@/context/StoreContext";
+import { useDataverse } from "@/context/hooks/useDataverse";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 
 const EndCall = () => {
-  const { cancelAStream } = useStoreContext();
+  const { cancelStream } = useDataverse();
   const router = useRouter();
   return (
     <div>
@@ -29,14 +30,10 @@ const EndCall = () => {
                 If you go off the call, your active status will automatically
                 turn off, indicating that you`re currently unavailable.
               </p>
-              <Button
-                title="Process"
-                isFunc
-                handleClick={() => cancelAStream()}
-              />
+              <Button title="Process" isFunc handleClick={cancelStream} />
               <span
                 onClick={() => router.back()}
-                className="text-[14px] font-normal text-center"
+                className="text-[14px] cursor-pointer font-normal text-center"
               >
                 Go Back
               </span>

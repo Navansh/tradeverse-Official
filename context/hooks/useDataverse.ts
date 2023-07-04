@@ -73,6 +73,23 @@ export function useDataverse() {
     }
   }
 
+  async function cancelStream() {
+    try {
+      await connectWallet();
+      await initiateCapability();
+      const res = await runtimeConnector?.contractCall({
+        contractAddress: StoreAddress,
+        abi: Store.abi,
+        method: "cancelStream",
+        params: [],
+        mode: Mode.Write,
+      });
+      toast.success("Call cancelled successfully");
+    } catch (error) {
+      toast.error("something went wrong");
+    }
+  }
+
   async function creatAStore(storeData: {
     storename: string;
     category: string;
@@ -213,5 +230,6 @@ export function useDataverse() {
     acceptTermsAndConditions,
     creatAStore,
     startAStream,
+    cancelStream
   };
 }

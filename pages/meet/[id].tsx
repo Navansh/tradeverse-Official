@@ -62,7 +62,7 @@ const VideoCall = () => {
 
   useEventListner("lobby:initialized", () => {
     iframeApi.initialize({
-      redirectUrlOnLeave: "https://tradeverse-particle.vercel.app/endCall",
+      redirectUrlOnLeave: "https://tradeverse-official.vercel.app/endCall",
       wallets: ["metamask"],
       background:
         "https://gateway.pinata.cloud/ipfs/QmWCec9nWPf7KnaBGeaWtVoPT8dBEXSWXjLhhb47RTfPUD?_gl=1*1rqjpoc*rs_ga*NzczNDkyOTU3LjE2ODc0NzY0MjE.*rs_ga_5RMPXG14TE*MTY4NzQ3NjQyMC4xLjEuMTY4NzQ3NjcyOC43LjAuMA..",
