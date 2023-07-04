@@ -27,7 +27,7 @@ export function useDataverse() {
     connectWallet();
   }, [isBrowser]);
 
-  const appName = "TradeverseOfficialEcommerce";
+  const appName = "TradeverseOfficialEcommerces";
   const [runtimeConnector, setRuntimeConnector] = useState<RuntimeConnector>();
   const [pkh, setPkh] = useState<string | undefined>("");
 
@@ -156,7 +156,7 @@ export function useDataverse() {
     initiateCapability();
     await runtimeConnector?.createStream({
       modelId:
-        "kjzl6hvfrbw6c6mcmmbwz7b4x3kn2qmcocg2hbdb6doudo69mitz3zsn7e8238n", // Replace with the actual model ID for your store model
+        "kjzl6hvfrbw6cavewkq8smhhpvbhazsz3kjr1015l8qn4ony486qt8b9qv3w57x", // Replace with the actual model ID for your store model
       streamContent: {
         //appVersion: "0.2.0",
         storename,
@@ -184,7 +184,7 @@ export function useDataverse() {
   async function getAllStores(): Promise<any[]> {
     const streams = await runtimeConnector?.loadStreamsBy({
       modelId:
-        "kjzl6hvfrbw6c6mcmmbwz7b4x3kn2qmcocg2hbdb6doudo69mitz3zsn7e8238n",
+        "kjzl6hvfrbw6cavewkq8smhhpvbhazsz3kjr1015l8qn4ony486qt8b9qv3w57x",
     });
     console.log(streams);
     if (Array.isArray(streams)) {
