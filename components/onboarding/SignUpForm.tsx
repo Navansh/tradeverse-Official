@@ -134,7 +134,7 @@ const SignUpForm = ({ setActive }: Props) => {
           cover: coverImage,
           category: selectedCategory,
           storeName: storeName,
-          owner: account,
+          owner: pkh,
         });
         console.log(docRef.id);
         router.push("/onboarding/congratulation");
